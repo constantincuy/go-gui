@@ -1,0 +1,10 @@
+button>body {
+    background: #343434;
+}
+button>label {
+    color: #ffffff;
+}
+
+text {
+    font-size: 12px;
+}
