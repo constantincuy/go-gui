@@ -18,7 +18,7 @@ As soon as something on the screen starts moving, resizing etc. frames will be r
 
 ### Component based architecture
 Go-Gui uses components to build up the rendered view. 
-There are two major component types Native components and Managed Components.
+There are two major component types "native components" and "managed components".
 
 #### Native components
 Native components register to the native render call of the render pipeline to 
@@ -28,13 +28,13 @@ to let the render pipeline know when a rerender should occur.
 
 #### Managed Components
 Managed Components don't draw to the screen instead they compose different managed or native components
-to a new reusable block. A button is a example for this its made out of a Box and Text native component.
+to a new reusable block. A button is an example for this its made out of a Box and Text native component.
 The engine manages when a component should be rerendered based on their children native components dirty flag or if the layout of the
-component change.
+managed component changes.
 
 ### Event System
 Go-Gui supports a rudimentary event system for now (Only mouse events click/hover).
-Every component can listen to relevant events by registering an listener in its `Mount()` function via the components 
+Every component can listen to relevant events by registering a listener in its `Mount()` function via the components 
 core and update its state accordingly.
 
 ### Customizable render pipelines
