@@ -2,7 +2,6 @@ package components
 
 import (
 	"fmt"
-	"github.com/constantincuy/go-gui/ui/common"
 	"github.com/constantincuy/go-gui/ui/component"
 	"github.com/constantincuy/go-gui/ui/event"
 )
@@ -32,17 +31,18 @@ func (c *Counter) Mount() {
 }
 
 func (c *Counter) setCurrentCount() {
-	c.button.SetText(fmt.Sprintf("Clicked %d", c.counter))
+	c.button.SetText(fmt.Sprintf("Clicked %d times", c.counter))
 }
 
-func (c *Counter) Update() {}
+func (c *Counter) Update() {
+	//Handle update logic target is 60 update calls per second
+}
 
-func (c *Counter) Destroy() {}
+func (c *Counter) Destroy() {
+	//Clean up of resources if needed
+}
 
+// NewCounter Factory for `AddChild` method `c.Core().AddChild(NewCounter)`
 func NewCounter(core component.Core) component.Component {
-	core.SetSize(common.Size{
-		Width:  120,
-		Height: 35,
-	})
 	return &Counter{core: core}
 }

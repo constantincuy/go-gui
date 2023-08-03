@@ -1,7 +1,7 @@
 package views
 
 import (
-	"github.com/constantincuy/go-gui/example/buttons/ui/components"
+	"github.com/constantincuy/go-gui/example/counter/ui/components"
 	"github.com/constantincuy/go-gui/ui/component"
 )
 
