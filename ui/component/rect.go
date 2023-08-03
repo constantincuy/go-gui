@@ -19,7 +19,7 @@ func (box *Rect) Core() *Core {
 }
 
 func (box *Rect) Mount() {
-	box.Core().ApplyStyle("box")
+	box.Core().ApplyStyle("rect")
 	box.core.OnRender(func(bounds image.Rectangle, screen *ebiten.Image) {
 		vector.DrawFilledRect(screen, float32(bounds.Min.X), float32(bounds.Min.Y), float32(box.core.GetSize().Width), float32(box.core.GetSize().Height), box.getBackgroundOrDefault(), false)
 	})
