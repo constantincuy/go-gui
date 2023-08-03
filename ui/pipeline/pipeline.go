@@ -1,8 +1,8 @@
 package pipeline
 
 import (
+	"github.com/constantincuy/go-gui/ui/window"
 	"github.com/hajimehoshi/ebiten/v2"
-	"gode/ui/window"
 )
 
 type Pipeline interface {

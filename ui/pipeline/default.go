@@ -1,9 +1,9 @@
 package pipeline
 
 import (
+	"github.com/constantincuy/go-gui/ui/component"
+	"github.com/constantincuy/go-gui/ui/window"
 	"github.com/hajimehoshi/ebiten/v2"
-	"gode/ui/component"
-	"gode/ui/window"
 	"image"
 	"sort"
 )

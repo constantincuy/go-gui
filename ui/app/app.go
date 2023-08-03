@@ -1,12 +1,12 @@
 package app
 
 import (
+	"github.com/constantincuy/go-gui/ui/component"
+	"github.com/constantincuy/go-gui/ui/input"
+	pipeline2 "github.com/constantincuy/go-gui/ui/pipeline"
+	"github.com/constantincuy/go-gui/ui/theme"
+	"github.com/constantincuy/go-gui/ui/window"
 	"github.com/hajimehoshi/ebiten/v2"
-	"gode/ui/component"
-	"gode/ui/input"
-	pipeline2 "gode/ui/pipeline"
-	"gode/ui/theme"
-	"gode/ui/window"
 	"log"
 	"os"
 )

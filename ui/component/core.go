@@ -1,11 +1,11 @@
 package component
 
 import (
+	"github.com/constantincuy/go-gui/ui/anchor"
+	"github.com/constantincuy/go-gui/ui/common"
+	"github.com/constantincuy/go-gui/ui/event"
+	"github.com/constantincuy/go-gui/ui/theme"
 	"github.com/hajimehoshi/ebiten/v2"
-	"gode/ui/anchor"
-	"gode/ui/common"
-	"gode/ui/event"
-	"gode/ui/theme"
 	"image"
 )
 

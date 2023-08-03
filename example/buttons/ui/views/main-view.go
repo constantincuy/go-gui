@@ -1,9 +1,9 @@
 package views
 
 import (
-	"gode/example/buttons/ui/components"
-	"gode/ui/common"
-	"gode/ui/component"
+	"github.com/constantincuy/go-gui/example/buttons/ui/components"
+	"github.com/constantincuy/go-gui/ui/common"
+	"github.com/constantincuy/go-gui/ui/component"
 )
 
 type MainView struct {

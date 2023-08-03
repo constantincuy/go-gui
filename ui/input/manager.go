@@ -1,10 +1,10 @@
 package input
 
 import (
+	"github.com/constantincuy/go-gui/ui/component"
+	"github.com/constantincuy/go-gui/ui/event"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	"gode/ui/component"
-	"gode/ui/event"
 	"image"
 )
 

@@ -1,7 +1,7 @@
 package component
 
 import (
-	"gode/ui/common"
+	"github.com/constantincuy/go-gui/ui/common"
 	"image"
 )
 

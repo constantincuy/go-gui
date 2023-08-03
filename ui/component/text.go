@@ -1,9 +1,9 @@
 package component
 
 import (
+	"github.com/constantincuy/go-gui/ui/common"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	"gode/ui/common"
 	"image"
 	"image/color"
 )

@@ -2,10 +2,10 @@ package component
 
 import (
 	"fmt"
+	"github.com/constantincuy/go-gui/ui/common"
+	"github.com/constantincuy/go-gui/ui/theme"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
-	"gode/ui/common"
-	"gode/ui/theme"
 	"image"
 	"image/color"
 )

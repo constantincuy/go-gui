@@ -2,9 +2,9 @@ package components
 
 import (
 	"fmt"
-	"gode/ui/common"
-	"gode/ui/component"
-	"gode/ui/event"
+	"github.com/constantincuy/go-gui/ui/common"
+	"github.com/constantincuy/go-gui/ui/component"
+	"github.com/constantincuy/go-gui/ui/event"
 )
 
 type Counter struct {

@@ -1,10 +1,10 @@
 package main
 
 import (
-	"gode/example/buttons/ui/views"
-	"gode/ui/app"
-	"gode/ui/pipeline"
-	"gode/ui/window"
+	"github.com/constantincuy/go-gui/example/buttons/ui/views"
+	"github.com/constantincuy/go-gui/ui/app"
+	"github.com/constantincuy/go-gui/ui/pipeline"
+	"github.com/constantincuy/go-gui/ui/window"
 	"image/color"
 )
 

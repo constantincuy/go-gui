@@ -2,10 +2,10 @@ package pipeline
 
 import (
 	"fmt"
+	"github.com/constantincuy/go-gui/ui/component"
+	"github.com/constantincuy/go-gui/ui/window"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	"gode/ui/component"
-	"gode/ui/window"
 )
 
 type DebugPipeline struct {

@@ -1,8 +1,8 @@
 package window
 
 import (
-	"gode/ui/common"
-	"gode/ui/component"
+	"github.com/constantincuy/go-gui/ui/common"
+	"github.com/constantincuy/go-gui/ui/component"
 	"image/color"
 )
 

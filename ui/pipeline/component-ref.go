@@ -1,7 +1,7 @@
 package pipeline
 
 import (
-	"gode/ui/component"
+	"github.com/constantincuy/go-gui/ui/component"
 	"image"
 )
 
