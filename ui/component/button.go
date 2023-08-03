@@ -2,12 +2,11 @@ package component
 
 import (
 	"github.com/constantincuy/go-gui/ui/common"
-	"image"
 )
 
 type Button struct {
 	core       Core
-	background *Box
+	background *Rect
 	text       *Text
 	counter    int
 }
@@ -20,20 +19,14 @@ func (b *Button) Mount() {
 	defaultText := "Button"
 	b.core.ApplyStyle("button")
 	size := b.core.GetSize()
-	box := NewBox(image.Point{
-		X: 0,
-		Y: 0,
-	}, size)
-	text := NewText(defaultText)
-	b.core.AddChild(&text)
-	b.core.AddChild(&box)
-	b.background = box.(*Box)
-	text.Core().SetZ(1)
-	//text.Core().CenterIn(b.background.Core())
-	b.text = text.(*Text)
+	b.text = b.core.AddChild(NewText).(*Text)
+	b.background = b.core.AddChild(NewRect).(*Rect)
+	b.background.Core().SetSize(size)
+	b.text.SetText(defaultText)
+	b.text.Core().SetZ(1)
 
-	box.Core().ApplyStyle("button>body")
-	text.Core().ApplyStyle("button>label")
+	b.background.Core().ApplyStyle("button>body")
+	b.text.Core().ApplyStyle("button>label")
 }
 
 func (b *Button) SetText(text string) {
@@ -51,9 +44,10 @@ func (b *Button) Update() {
 func (b *Button) Destroy() {
 }
 
-func NewButton() Component {
-	return &Button{core: NewCore(common.Size{
+func NewButton(core Core) Component {
+	core.SetSize(common.Size{
 		Width:  120,
 		Height: 35,
-	})}
+	})
+	return &Button{core: core}
 }

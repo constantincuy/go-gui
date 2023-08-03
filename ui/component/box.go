@@ -2,7 +2,6 @@ package component
 
 import (
 	"fmt"
-	"github.com/constantincuy/go-gui/ui/common"
 	"github.com/constantincuy/go-gui/ui/theme"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
@@ -10,25 +9,25 @@ import (
 	"image/color"
 )
 
-type Box struct {
+type Rect struct {
 	core          Core
 	updateCounter int
 }
 
-func (box *Box) Core() *Core {
+func (box *Rect) Core() *Core {
 	return &box.core
 }
 
-func (box *Box) Mount() {
+func (box *Rect) Mount() {
 	box.Core().ApplyStyle("box")
 	box.core.OnRender(func(bounds image.Rectangle, screen *ebiten.Image) {
 		vector.DrawFilledRect(screen, float32(bounds.Min.X), float32(bounds.Min.Y), float32(box.core.GetSize().Width), float32(box.core.GetSize().Height), box.getBackgroundOrDefault(), false)
 	})
 }
 
-func (box *Box) Destroy() {}
+func (box *Rect) Destroy() {}
 
-func (box *Box) SetColor(c color.Color) {
+func (box *Rect) SetColor(c color.Color) {
 	box.core.SetDirty(true)
 	r, g, b, _ := c.RGBA()
 	style := box.Core().Style()
@@ -38,11 +37,11 @@ func (box *Box) SetColor(c color.Color) {
 	}
 }
 
-func (box *Box) GetColor() color.Color {
+func (box *Rect) GetColor() color.Color {
 	return box.getBackgroundOrDefault()
 }
 
-func (box *Box) getBackgroundOrDefault() color.RGBA {
+func (box *Rect) getBackgroundOrDefault() color.RGBA {
 	prop, exists := box.Core().style["background"]
 	if exists {
 		c, e := prop.AsColor()
@@ -59,10 +58,8 @@ func (box *Box) getBackgroundOrDefault() color.RGBA {
 	}
 }
 
-func (box *Box) Update() {}
+func (box *Rect) Update() {}
 
-func NewBox(position image.Point, size common.Size) Component {
-	core := NewCore(size)
-	core.SetPosition(position)
-	return &Box{core: core}
+func NewRect(core Core) Component {
+	return &Rect{core: core}
 }

@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	win := window.NewDefaultWindow(views.NewMainView())
+	win := window.NewDefaultWindow(views.NewMainView)
 	win.SetBackground(color.RGBA{
 		R: 0x22,
 		G: 0x22,

@@ -36,11 +36,13 @@ func (win *DefaultWindow) Layout(outsideWidth, outsideHeight int) {
 		Width:  outsideWidth,
 		Height: outsideHeight,
 	}
+	win.view.Core().SetSize(win.size)
 }
 
-func NewDefaultWindow(c component.Component) Window {
-	c.Mount()
-	return &DefaultWindow{view: c, color: color.RGBA{
+func NewDefaultWindow(viewFactory func(core component.Core) component.Component) Window {
+	view := viewFactory(component.NewCore())
+	view.Mount()
+	return &DefaultWindow{view: view, color: color.RGBA{
 		R: 0,
 		G: 0,
 		B: 0,

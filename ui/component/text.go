@@ -51,11 +51,11 @@ func (text *Text) GetText() string {
 
 func (text *Text) Update() {}
 
-func NewText(text string) Component {
-	core := NewCore(common.Size{
-		Width:  len(text) * 6,
+func NewText(core Core) Component {
+	core.SetSize(common.Size{
+		Width:  6,
 		Height: 16,
 	})
 	col := color.RGBA{R: 0xff, G: 0xff, B: 0xff, A: 0xff}
-	return &Text{core: core, color: col, text: text}
+	return &Text{core: core, color: col}
 }

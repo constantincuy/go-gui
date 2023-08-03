@@ -18,9 +18,7 @@ func (c *Counter) Core() *component.Core {
 }
 
 func (c *Counter) Mount() {
-	button := component.NewButton()
-	c.Core().AddChild(&button)
-	c.button = button.(*component.Button)
+	c.button = c.Core().AddChild(component.NewButton).(*component.Button)
 	c.counter = 0
 	c.setCurrentCount()
 
@@ -34,13 +32,17 @@ func (c *Counter) Mount() {
 }
 
 func (c *Counter) setCurrentCount() {
-	c.button.SetText(fmt.Sprintln("Clicked ", c.counter))
+	c.button.SetText(fmt.Sprintf("Clicked %d", c.counter))
 }
 
 func (c *Counter) Update() {}
 
 func (c *Counter) Destroy() {}
 
-func NewCounter() component.Component {
-	return &Counter{core: component.NewCore(common.Size{Width: 120, Height: 35})}
+func NewCounter(core component.Core) component.Component {
+	core.SetSize(common.Size{
+		Width:  120,
+		Height: 35,
+	})
+	return &Counter{core: core}
 }

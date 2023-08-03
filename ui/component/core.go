@@ -44,9 +44,13 @@ func (core *Core) Children() []*Component {
 	return core.children
 }
 
-func (core *Core) AddChild(component *Component) {
-	(*component).Mount()
-	core.children = append(core.children, component)
+func (core *Core) AddChild(factory func(core Core) Component) Component {
+	newCore := NewCore()
+	child := factory(newCore)
+	child.Mount()
+	core.children = append(core.children, &child)
+
+	return child
 }
 
 func (core *Core) SetZ(z int) {
@@ -154,7 +158,8 @@ func (core *Core) Destroy() {
 	core.canvas.Dispose()
 }
 
-func NewCore(size common.Size) Core {
+func NewCore() Core {
 	// Always set dirty to true on creation to trigger initial render
+	size := common.Size{Width: 0, Height: 0}
 	return Core{canvas: nil, dataDirty: true, size: size, visible: true, layoutDirty: true}
 }
