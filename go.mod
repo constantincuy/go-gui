@@ -1,4 +1,4 @@
-module gode
+module github.com/constantincuy/go-gui
 
 go 1.20
 
