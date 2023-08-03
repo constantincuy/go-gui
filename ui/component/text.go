@@ -2,8 +2,9 @@ package component
 
 import (
 	"github.com/constantincuy/go-gui/ui/common"
+	"github.com/constantincuy/go-gui/ui/font"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/text"
 	"image"
 	"image/color"
 )
@@ -13,43 +14,84 @@ type Text struct {
 	updateCounter int
 	color         color.Color
 	text          string
+	font          string
+	size          float64
+	lineHeight    float64
 }
 
-func (text *Text) Mount() {
-	text.core.OnRender(func(bounds image.Rectangle, screen *ebiten.Image) {
-		ebitenutil.DebugPrintAt(screen, text.text, bounds.Min.X, bounds.Min.Y)
+func (t *Text) Mount() {
+	t.core.OnRender(func(bounds image.Rectangle, screen *ebiten.Image) {
+		ff, _ := font.Manager.GetFontFace(t.font, t.size, t.lineHeight)
+		text.Draw(screen, t.text, ff, bounds.Min.X, bounds.Min.Y+int(t.lineHeight), t.color)
 	})
 }
 
-func (text *Text) Destroy() {}
+func (t *Text) Destroy() {}
 
-func (text *Text) Core() *Core {
-	return &text.core
+func (t *Text) Core() *Core {
+	return &t.core
 }
 
-func (text *Text) SetColor(c color.Color) {
-	text.core.SetDirty(true)
-	text.color = c
+func (t *Text) SetColor(c color.Color) {
+	t.Core().SetDirty(true)
+	t.color = c
 }
 
-func (text *Text) GetColor() color.Color {
-	return text.color
+func (t *Text) Color() color.Color {
+	return t.color
 }
 
-func (text *Text) SetText(t string) {
-	text.core.SetSize(common.Size{
-		Width:  len(t) * 6,
-		Height: 16,
+func (t *Text) SetText(text string) {
+	t.core.SetSize(common.Size{
+		Width:  len(text) * 6,
+		Height: int(t.lineHeight),
 	})
-	text.text = t
-	text.core.ForceFrameRedraw()
+	t.text = text
+	t.core.ForceFrameRedraw()
 }
 
-func (text *Text) GetText() string {
-	return text.text
+func (t *Text) Text() string {
+	return t.text
 }
 
-func (text *Text) Update() {}
+func (t *Text) SetFont(font string) {
+	t.font = font
+	t.recalculateSize()
+	t.core.ForceFrameRedraw()
+}
+
+func (t *Text) Font() string {
+	return t.font
+}
+
+func (t *Text) SetFontSize(size float64) {
+	t.size = size
+	t.recalculateSize()
+	t.core.ForceFrameRedraw()
+}
+
+func (t *Text) FontSize() float64 {
+	return t.size
+}
+
+func (t *Text) SetLineHeight(size float64) {
+	t.lineHeight = size
+	t.recalculateSize()
+	t.core.ForceFrameRedraw()
+}
+
+func (t *Text) LineHeight() float64 {
+	return t.lineHeight
+}
+
+func (t *Text) Update() {}
+
+func (t *Text) recalculateSize() {
+	t.core.SetSize(common.Size{
+		Width:  len(t.text) * 6, // TODO: Calculate width based on glyphs
+		Height: int(t.lineHeight),
+	})
+}
 
 func NewText(core Core) Component {
 	core.SetSize(common.Size{
@@ -57,5 +99,5 @@ func NewText(core Core) Component {
 		Height: 16,
 	})
 	col := color.RGBA{R: 0xff, G: 0xff, B: 0xff, A: 0xff}
-	return &Text{core: core, color: col}
+	return &Text{core: core, color: col, size: 14, font: "Segoe-UI", lineHeight: 16}
 }

@@ -2,8 +2,9 @@ package app
 
 import (
 	"github.com/constantincuy/go-gui/ui/component"
+	"github.com/constantincuy/go-gui/ui/font"
 	"github.com/constantincuy/go-gui/ui/input"
-	pipeline2 "github.com/constantincuy/go-gui/ui/pipeline"
+	"github.com/constantincuy/go-gui/ui/pipeline"
 	"github.com/constantincuy/go-gui/ui/theme"
 	"github.com/constantincuy/go-gui/ui/window"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -12,14 +13,14 @@ import (
 )
 
 type App struct {
-	renderPipelines []pipeline2.Pipeline
+	renderPipelines []pipeline.Pipeline
 	currentWindow   window.Window
 	currentTitle    string
 	themePath       string
 	inputManager    input.Manager
 }
 
-func (app *App) AddPipeline(pipe pipeline2.Pipeline) {
+func (app *App) AddPipeline(pipe pipeline.Pipeline) {
 	app.renderPipelines = append(app.renderPipelines, pipe)
 }
 
@@ -97,8 +98,13 @@ func (app *App) Start() {
 func NewApp(win window.Window) App {
 	app := App{}
 	app.SetWindow(win)
-	app.AddPipeline(pipeline2.NewDefaultPipeline())
+	app.AddPipeline(pipeline.NewDefaultPipeline())
 	app.inputManager = input.NewManager()
+	//TODO: Cross platform solution
+	err := font.Manager.LoadFontFromPath("Segoe-UI", "C:\\Windows\\Fonts\\segoeui.ttf")
+	if err != nil {
+		log.Println("Could not load default font not on windows?")
+	}
 
 	return app
 }

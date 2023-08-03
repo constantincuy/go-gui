@@ -34,8 +34,8 @@ func (b *Button) SetText(text string) {
 	//b.text.Core().CenterIn(b.background.Core())
 }
 
-func (b *Button) GetText() string {
-	return b.text.GetText()
+func (b *Button) Text() string {
+	return b.text.Text()
 }
 
 func (b *Button) Update() {
