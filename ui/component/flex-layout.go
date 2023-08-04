@@ -1,5 +1,7 @@
 package component
 
+import "github.com/constantincuy/go-gui/ui/common"
+
 type FlexPosition string
 
 const (
@@ -8,43 +10,63 @@ const (
 	FlexEnd    FlexPosition = "flex-end"
 )
 
+type FlexDirection string
+
+const (
+	FlexRow    FlexDirection = "row"
+	FlexColumn FlexDirection = "column"
+)
+
 // FlexLayout This layout can position based on horizontal and vertical layout
 type FlexLayout struct {
 	JustifyContent FlexPosition
 	AlignItems     FlexPosition
+	Direction      FlexDirection
 	Gap            int
+}
+
+func (l FlexLayout) UseDirection(dir FlexDirection) FlexLayout {
+	l.Direction = dir
+	return l
+}
+
+func (l FlexLayout) UseGap(gap int) FlexLayout {
+	l.Gap = gap
+	return l
+}
+
+func (l FlexLayout) Justify(pos FlexPosition) FlexLayout {
+	l.JustifyContent = pos
+	return l
+}
+
+func (l FlexLayout) Align(pos FlexPosition) FlexLayout {
+	l.AlignItems = pos
+	return l
 }
 
 func (l FlexLayout) ProcessLayout(comp Component) []*Component {
 	children := comp.Core().Children()
 	for i, child := range children {
-		y := l.yCalculation(comp, child)
-		x := l.xCalculation(i, children, comp, child)
+		var y, x int
+		widthGetter := func(size common.Size) int { return size.Width }
+		heightGetter := func(size common.Size) int { return size.Height }
+		childPos := (*child).Core().Position()
+		if l.Direction == FlexColumn {
+			y = l.groupCentricCalculation(i, children, l.AlignItems, comp, heightGetter, childPos.Y)
+			x = l.selfCentricCalculation(l.JustifyContent, comp, child, widthGetter, childPos.X)
+		} else {
+			y = l.selfCentricCalculation(l.AlignItems, comp, child, heightGetter, childPos.Y)
+			x = l.groupCentricCalculation(i, children, l.JustifyContent, comp, widthGetter, childPos.X)
+		}
 		(*child).Core().SetPositionXY(x, y)
 	}
 	return children
 }
 
-func (l FlexLayout) yCalculation(parent Component, child *Component) int {
-	parentSize := parent.Core().GetSize()
-	childPos := (*child).Core().Position()
-	childSize := (*child).Core().GetSize()
-	switch l.AlignItems {
-	case FlexStart:
-		return 0
-	case FlexCenter:
-		return (parentSize.Height / 2) - (childSize.Height / 2)
-	case FlexEnd:
-		return parentSize.Height - childSize.Height
-	}
-
-	return childPos.Y
-}
-
-func (l FlexLayout) xCalculation(index int, allInRow []*Component, parent Component, child *Component) int {
-	parentSize := parent.Core().GetSize()
-	childPos := (*child).Core().Position()
-	switch l.AlignItems {
+func (l FlexLayout) groupCentricCalculation(index int, allInRow []*Component, flexPos FlexPosition, parent Component, getter func(size common.Size) int, defaultValue int) int {
+	parentValue := getter(parent.Core().GetSize())
+	switch flexPos {
 	case FlexStart:
 		if index == 0 {
 			return 0
@@ -54,70 +76,48 @@ func (l FlexLayout) xCalculation(index int, allInRow []*Component, parent Compon
 		prevPos := (*prev).Core().Position()
 		return prevPos.X + prevSize.Width
 	case FlexCenter:
-		rowWidth := l.sumWidth(allInRow)
-		offset := l.sumWidth(allInRow[:index])
-		startingPoint := (parentSize.Width / 2) - (rowWidth / 2)
+		rowWidth := l.sumBy(allInRow, getter)
+		offset := l.sumBy(allInRow[:index], getter)
+		startingPoint := (parentValue / 2) - (rowWidth / 2)
 		return startingPoint + offset + l.Gap
 	case FlexEnd:
-		rowWidth := l.sumWidth(allInRow)
-		offset := l.sumWidth(allInRow[:index])
-		startingPoint := parentSize.Width - rowWidth
+		rowWidth := l.sumBy(allInRow, getter)
+		offset := l.sumBy(allInRow[:index], getter)
+		startingPoint := parentValue - rowWidth
 		return startingPoint + offset
 	}
 
-	return childPos.Y
+	return defaultValue
 }
 
-func (l FlexLayout) sumWidth(selection []*Component) int {
-	width := 0
+func (l FlexLayout) selfCentricCalculation(flexPos FlexPosition, parent Component, child *Component, getter func(size common.Size) int, defaultValue int) int {
+	parentValue := getter(parent.Core().GetSize())
+	childValue := getter((*child).Core().GetSize())
+	switch flexPos {
+	case FlexStart:
+		return 0
+	case FlexCenter:
+		return (parentValue / 2) - (childValue / 2)
+	case FlexEnd:
+		return parentValue - childValue
+	}
+
+	return defaultValue
+}
+
+func (l FlexLayout) sumBy(selection []*Component, sumValueGetter func(size common.Size) int) int {
+	value := 0
 	for _, c := range selection {
-		width += (*c).Core().GetSize().Width
+		value += sumValueGetter((*c).Core().GetSize())
 	}
 
-	return width + (len(selection) * l.Gap)
+	return value + (len(selection) * l.Gap)
 }
 
-func FlexLayoutCentered() LayoutOptions {
-	return FlexLayout{
-		JustifyContent: FlexCenter,
-		AlignItems:     FlexCenter,
-	}
+func Flex() FlexLayout {
+	return FlexLayout{}
 }
 
-func FlexLayoutCenteredWithGap(gap int) LayoutOptions {
-	return FlexLayout{
-		JustifyContent: FlexCenter,
-		AlignItems:     FlexCenter,
-		Gap:            gap,
-	}
-}
-
-func FlexLayoutHorizontalCenter(verticalAlign FlexPosition) LayoutOptions {
-	return FlexLayout{
-		JustifyContent: FlexCenter,
-		AlignItems:     verticalAlign,
-	}
-}
-
-func FlexLayoutHorizontalCenterWithGap(verticalAlign FlexPosition, gap int) LayoutOptions {
-	return FlexLayout{
-		JustifyContent: FlexCenter,
-		AlignItems:     verticalAlign,
-		Gap:            gap,
-	}
-}
-
-func FlexLayoutVerticalCentered(horizontalAlign FlexPosition) LayoutOptions {
-	return FlexLayout{
-		JustifyContent: horizontalAlign,
-		AlignItems:     FlexCenter,
-	}
-}
-
-func FlexLayoutVerticalCenteredWithGap(horizontalAlign FlexPosition, gap int) LayoutOptions {
-	return FlexLayout{
-		JustifyContent: horizontalAlign,
-		AlignItems:     FlexCenter,
-		Gap:            gap,
-	}
+func FlexCentered() FlexLayout {
+	return Flex().Justify(FlexCenter).Align(FlexCenter)
 }

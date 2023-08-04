@@ -14,7 +14,7 @@ func (view *MainView) Core() *component.Core {
 }
 
 func (view *MainView) Mount() {
-	view.Core().SetDisplayType(component.FlexLayoutCenteredWithGap(5))
+	view.Core().SetDisplayType(component.FlexCentered().UseGap(5))
 	for i := 0; i < 5; i++ {
 		ex := view.Core().AddChild(components.NewCounter)
 		ex.Core().SetPositionXY(6+((i%10)*126), 6+((i/10)*41))
