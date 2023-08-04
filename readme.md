@@ -2,7 +2,7 @@
 
 Go-Gui is a simple GUI lib based on [ebitengine](https://ebitengine.org/).
 This project is not meant for production use and is solely a learning project to understand
-common problems in low level UI rendering.
+common challenges in low level UI rendering.
 
 ![Go Gui Example](assets/go-gui-example.png)
 
