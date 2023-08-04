@@ -13,3 +13,10 @@ func (s Size) ToPoint() image.Point {
 		Y: s.Height,
 	}
 }
+
+func SizeFromBounds(rect image.Rectangle) Size {
+	return Size{
+		Width:  rect.Dx(),
+		Height: rect.Dy(),
+	}
+}
