@@ -5,6 +5,7 @@ This project is not meant for production use and is solely a learning project to
 common problems in low level UI rendering.
 
 ![Go Gui Example](assets/go-gui-example.png)
+
 (See [Counter Example](example/counter))
 
 ## Features
