@@ -29,8 +29,7 @@ func initManager() manager {
 	textRenderer := etxt.NewStdRenderer()
 	glyphsCache := etxt.NewDefaultCache(10 * 1024 * 1024) // 10MB
 	textRenderer.SetCacheHandler(glyphsCache.NewHandler())
-	textRenderer.SetAlign(etxt.YCenter, etxt.XCenter)
-	textRenderer.SetSizePx(64)
+	textRenderer.SetVertAlign(etxt.Top)
 	return manager{
 		fontLib:      fontLib,
 		textRenderer: textRenderer,

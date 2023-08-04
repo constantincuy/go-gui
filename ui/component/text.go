@@ -18,6 +18,7 @@ type Text struct {
 	font          string
 	size          float64
 	lineHeight    float64
+	init          bool
 }
 
 func (t *Text) Mount() {
@@ -93,7 +94,15 @@ func (t *Text) LineHeight() float64 {
 	return t.lineHeight
 }
 
-func (t *Text) Update() {}
+func (t *Text) Update() {
+	if !t.init {
+		textRenderer := font.Manager.TextRenderer(t.font)
+		if textRenderer != nil {
+			t.recalculateSize()
+			t.init = true
+		}
+	}
+}
 
 func (t *Text) recalculateSize() {
 	r := t.prepareRenderer()
@@ -107,10 +116,7 @@ func (t *Text) recalculateSize() {
 }
 
 func NewText(core Core) Component {
-	core.SetSize(common.Size{
-		Width:  6,
-		Height: 16,
-	})
 	col := color.RGBA{R: 0xff, G: 0xff, B: 0xff, A: 0xff}
-	return &Text{core: core, color: col, size: 12, font: "Segoe UI", lineHeight: 12}
+	text := &Text{core: core, color: col, size: 12, font: "Segoe UI", lineHeight: 12}
+	return text
 }
