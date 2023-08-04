@@ -1,12 +1,23 @@
 package views
 
 import (
+	"bytes"
+	_ "embed"
 	"github.com/constantincuy/go-gui/example/counter/ui/components"
 	"github.com/constantincuy/go-gui/ui/component"
+	"github.com/hajimehoshi/ebiten/v2"
+	"image"
+	"log"
+)
+
+var (
+	//go:embed gopher.png
+	GopherPNG []byte
 )
 
 type MainView struct {
-	core component.Core
+	core   component.Core
+	gopher *ebiten.Image
 }
 
 func (view *MainView) Core() *component.Core {
@@ -14,11 +25,20 @@ func (view *MainView) Core() *component.Core {
 }
 
 func (view *MainView) Mount() {
-	view.Core().SetDisplayType(component.FlexLayoutCenteredWithGap(5))
-	for i := 0; i < 5; i++ {
-		ex := view.Core().AddChild(components.NewCounter)
-		ex.Core().SetPositionXY(6+((i%10)*126), 6+((i/10)*41))
+	decoded, _, err := image.Decode(bytes.NewReader(GopherPNG))
+	if err != nil {
+		log.Fatal(err)
 	}
+	view.gopher = ebiten.NewImageFromImage(decoded)
+
+	view.Core().SetDisplayType(component.FlexCentered().UseGap(60).UseDirection(component.FlexColumn))
+	headline := view.Core().AddChild(component.NewText).(*component.Text)
+	headline.SetFontSize(30)
+	headline.SetLineHeight(30)
+	headline.SetText("Welcome to Go-Gui")
+	img := view.Core().AddChild(component.NewImage).(*component.Image)
+	img.SetImage(view.gopher)
+	view.Core().AddChild(components.NewCounter)
 }
 
 func (view *MainView) Update() {}
