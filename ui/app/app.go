@@ -89,9 +89,9 @@ func NewApp(win window.Window) App {
 	app.AddPipeline(pipeline.NewDefaultPipeline())
 	app.inputManager = input.NewManager()
 	//TODO: Cross platform solution
-	err := font.Manager.LoadFontFromPath("Segoe-UI", "C:\\Windows\\Fonts\\segoeui.ttf")
+	err := font.Manager.LoadFontFromPath("C:\\Windows\\Fonts\\segoeui.ttf")
 	if err != nil {
-		log.Println("Could not load default font not on windows?")
+		log.Println("Could not load default font not on windows?", err)
 	}
 
 	return app

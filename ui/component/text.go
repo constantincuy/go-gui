@@ -4,7 +4,8 @@ import (
 	"github.com/constantincuy/go-gui/ui/common"
 	"github.com/constantincuy/go-gui/ui/font"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/text"
+	"github.com/tinne26/etxt"
+	"github.com/tinne26/etxt/efixed"
 	"image"
 	"image/color"
 )
@@ -17,13 +18,25 @@ type Text struct {
 	font          string
 	size          float64
 	lineHeight    float64
+	init          bool
 }
 
 func (t *Text) Mount() {
 	t.core.OnRender(func(bounds image.Rectangle, screen *ebiten.Image) {
-		ff, _ := font.Manager.GetFontFace(t.font, t.size, t.lineHeight)
-		text.Draw(screen, t.text, ff, bounds.Min.X, bounds.Min.Y+int(t.size), t.color)
+		textRenderer := t.prepareRenderer()
+		textRenderer.SetTarget(screen)
+		textRenderer.Draw(t.text, bounds.Min.X, bounds.Min.Y)
 	})
+}
+
+func (t *Text) prepareRenderer() *etxt.Renderer {
+	textRenderer := font.Manager.TextRenderer(t.font)
+	if textRenderer != nil {
+		textRenderer.SetSizePx(int(t.size))
+		textRenderer.SetLineHeight(t.lineHeight)
+	}
+
+	return textRenderer
 }
 
 func (t *Text) Destroy() {}
@@ -81,20 +94,29 @@ func (t *Text) LineHeight() float64 {
 	return t.lineHeight
 }
 
-func (t *Text) Update() {}
+func (t *Text) Update() {
+	if !t.init {
+		textRenderer := font.Manager.TextRenderer(t.font)
+		if textRenderer != nil {
+			t.recalculateSize()
+			t.init = true
+		}
+	}
+}
 
 func (t *Text) recalculateSize() {
-	t.core.SetSize(common.Size{
-		Width:  len(t.text) * 6, //int(t.size/1.99), // TODO: Calculate width based on glyphs
-		Height: int(t.size),
-	})
+	r := t.prepareRenderer()
+	if r != nil {
+		bounds := r.SelectionRect(t.text)
+		t.core.SetSize(common.Size{
+			Width:  int(efixed.ToFloat64(bounds.Width)),
+			Height: int(efixed.ToFloat64(bounds.Height)),
+		})
+	}
 }
 
 func NewText(core Core) Component {
-	core.SetSize(common.Size{
-		Width:  6,
-		Height: 16,
-	})
 	col := color.RGBA{R: 0xff, G: 0xff, B: 0xff, A: 0xff}
-	return &Text{core: core, color: col, size: 14, font: "Segoe-UI", lineHeight: 14}
+	text := &Text{core: core, color: col, size: 12, font: "Segoe UI", lineHeight: 12}
+	return text
 }
