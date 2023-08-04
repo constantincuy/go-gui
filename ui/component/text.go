@@ -22,7 +22,7 @@ type Text struct {
 func (t *Text) Mount() {
 	t.core.OnRender(func(bounds image.Rectangle, screen *ebiten.Image) {
 		ff, _ := font.Manager.GetFontFace(t.font, t.size, t.lineHeight)
-		text.Draw(screen, t.text, ff, bounds.Min.X-int(t.size), bounds.Min.Y+3, t.color)
+		text.Draw(screen, t.text, ff, bounds.Min.X, bounds.Min.Y+int(t.size), t.color)
 	})
 }
 
@@ -85,8 +85,8 @@ func (t *Text) Update() {}
 
 func (t *Text) recalculateSize() {
 	t.core.SetSize(common.Size{
-		Width:  len(t.text) * 6, // TODO: Calculate width based on glyphs
-		Height: int(t.lineHeight),
+		Width:  len(t.text) * 6, //int(t.size/1.99), // TODO: Calculate width based on glyphs
+		Height: int(t.size),
 	})
 }
 

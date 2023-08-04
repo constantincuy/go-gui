@@ -101,13 +101,12 @@ func (pipe *DefaultPipeline) inScreen(win window.Window, comp component.Componen
 	return pos.X <= winSize.Width && pos.Y <= winSize.Height
 }
 
-func drawComponent(screen *ebiten.Image, component *component.Component, offset image.Point) {
+func drawComponent(screen *ebiten.Image, component *component.Component, computedPosition image.Point) {
 	core := (*component).Core()
 	size := core.GetSize()
-	pos := core.Position().Add(offset)
 	bounds := image.Rectangle{
-		Min: pos,
-		Max: pos.Add(size.ToPoint()),
+		Min: computedPosition,
+		Max: computedPosition.Add(size.ToPoint()),
 	}
 	core.Render(bounds, screen)
 }
