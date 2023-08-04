@@ -20,7 +20,7 @@ func (b *Button) Mount() {
 	b.Core().ApplyStyle("button")
 	size := b.Core().GetSize()
 	b.background = b.Core().AddChild(NewRect).(*Rect)
-	b.background.Core().SetDisplayType(FlexLayoutCentered())
+	b.background.Core().SetDisplayType(FlexCentered())
 	b.text = b.background.Core().AddChild(NewText).(*Text)
 	b.background.Core().SetSize(size)
 	b.text.SetText(defaultText)
