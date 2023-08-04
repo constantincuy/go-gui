@@ -28,7 +28,7 @@ func (box *Rect) Mount() {
 func (box *Rect) Destroy() {}
 
 func (box *Rect) SetColor(c color.Color) {
-	box.core.SetDirty(true)
+	box.core.ForceFrameRedraw()
 	r, g, b, _ := c.RGBA()
 	style := box.Core().Style()
 	(*style)["background"] = theme.Property{
