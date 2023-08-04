@@ -42,11 +42,8 @@ func (t *Text) Color() color.Color {
 }
 
 func (t *Text) SetText(text string) {
-	t.core.SetSize(common.Size{
-		Width:  len(text) * 6,
-		Height: int(t.lineHeight),
-	})
 	t.text = text
+	t.recalculateSize()
 	t.core.ForceFrameRedraw()
 }
 
