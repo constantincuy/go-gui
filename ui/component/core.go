@@ -1,7 +1,6 @@
 package component
 
 import (
-	"github.com/constantincuy/go-gui/ui/anchor"
 	"github.com/constantincuy/go-gui/ui/common"
 	"github.com/constantincuy/go-gui/ui/event"
 	"github.com/constantincuy/go-gui/ui/theme"
@@ -13,8 +12,8 @@ type Core struct {
 	name        string
 	style       map[string]theme.Property
 	position    image.Point
+	displayType LayoutOptions
 	size        common.Size
-	anchor      anchor.Anchor
 	canvas      *ebiten.Image
 	dataDirty   bool
 	layoutDirty bool
@@ -38,6 +37,14 @@ func (core *Core) Style() *map[string]theme.Property {
 
 func (core *Core) Events() *event.Queue {
 	return &core.eventQueue
+}
+
+func (core *Core) SetDisplayType(op LayoutOptions) {
+	core.displayType = op
+}
+
+func (core *Core) DisplayType() LayoutOptions {
+	return core.displayType
 }
 
 func (core *Core) Children() []*Component {
@@ -132,19 +139,6 @@ func (core *Core) GetSize() common.Size {
 	return core.size
 }
 
-func (core *Core) SetAnchor(anchor anchor.Anchor) {
-	core.layoutDirty = true
-	core.anchor = anchor
-}
-
-func (core *Core) GetAnchor() anchor.Anchor {
-	return core.anchor
-}
-
-func (core *Core) CenterIn(c *Core) {
-	core.SetPositionXY((c.size.Width/2)-(core.size.Width/2), (c.size.Height/2)-(core.size.Height/2))
-}
-
 func (core *Core) OnRender(renderer func(bounds image.Rectangle, screen *ebiten.Image)) {
 	core.renderer = renderer
 }
@@ -160,6 +154,12 @@ func (core *Core) Destroy() {
 
 func NewCore() Core {
 	// Always set dirty to true on creation to trigger initial render
-	size := common.Size{Width: 0, Height: 0}
-	return Core{canvas: nil, dataDirty: true, size: size, visible: true, layoutDirty: true}
+	return Core{
+		canvas:      nil,
+		dataDirty:   true,
+		size:        common.Size{Width: 0, Height: 0},
+		visible:     true,
+		layoutDirty: true,
+		displayType: BlockLayout{},
+	}
 }

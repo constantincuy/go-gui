@@ -17,10 +17,11 @@ func (b *Button) Core() *Core {
 
 func (b *Button) Mount() {
 	defaultText := "Button"
-	b.core.ApplyStyle("button")
-	size := b.core.GetSize()
-	b.text = b.core.AddChild(NewText).(*Text)
-	b.background = b.core.AddChild(NewRect).(*Rect)
+	b.Core().ApplyStyle("button")
+	size := b.Core().GetSize()
+	b.background = b.Core().AddChild(NewRect).(*Rect)
+	b.background.Core().SetDisplayType(FlexLayoutCentered())
+	b.text = b.background.Core().AddChild(NewText).(*Text)
 	b.background.Core().SetSize(size)
 	b.text.SetText(defaultText)
 	b.text.Core().SetZ(1)
@@ -31,7 +32,6 @@ func (b *Button) Mount() {
 
 func (b *Button) SetText(text string) {
 	b.text.SetText(text)
-	//b.text.Core().CenterIn(b.background.Core())
 }
 
 func (b *Button) Text() string {

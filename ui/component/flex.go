@@ -1,8 +1,4 @@
-package layout
-
-import (
-	"github.com/constantincuy/go-gui/ui/component"
-)
+package component
 
 type FlexPositions string
 
@@ -16,9 +12,10 @@ const (
 type FlexLayout struct {
 	JustifyContent FlexPositions
 	AlignItems     FlexPositions
+	Gap            int
 }
 
-func (l FlexLayout) ProcessLayout(comp component.Component) []*component.Component {
+func (l FlexLayout) ProcessLayout(comp Component) []*Component {
 	children := comp.Core().Children()
 	for i, child := range children {
 		y := l.yCalculation(comp, child)
@@ -28,7 +25,7 @@ func (l FlexLayout) ProcessLayout(comp component.Component) []*component.Compone
 	return children
 }
 
-func (l FlexLayout) yCalculation(parent component.Component, child *component.Component) int {
+func (l FlexLayout) yCalculation(parent Component, child *Component) int {
 	parentSize := parent.Core().GetSize()
 	childPos := (*child).Core().Position()
 	childSize := (*child).Core().GetSize()
@@ -44,7 +41,7 @@ func (l FlexLayout) yCalculation(parent component.Component, child *component.Co
 	return childPos.Y
 }
 
-func (l FlexLayout) xCalculation(index int, allInRow []*component.Component, parent component.Component, child *component.Component) int {
+func (l FlexLayout) xCalculation(index int, allInRow []*Component, parent Component, child *Component) int {
 	parentSize := parent.Core().GetSize()
 	childPos := (*child).Core().Position()
 	switch l.AlignItems {
@@ -57,13 +54,13 @@ func (l FlexLayout) xCalculation(index int, allInRow []*component.Component, par
 		prevPos := (*prev).Core().Position()
 		return prevPos.X + prevSize.Width
 	case FlexCenter:
-		rowWidth := sumWidth(allInRow)
-		offset := sumWidth(allInRow[:index])
+		rowWidth := l.sumWidth(allInRow)
+		offset := l.sumWidth(allInRow[:index])
 		startingPoint := (parentSize.Width / 2) - (rowWidth / 2)
-		return startingPoint + offset
+		return startingPoint + offset + l.Gap
 	case FlexEnd:
-		rowWidth := sumWidth(allInRow)
-		offset := sumWidth(allInRow[:index])
+		rowWidth := l.sumWidth(allInRow)
+		offset := l.sumWidth(allInRow[:index])
 		startingPoint := parentSize.Width - rowWidth
 		return startingPoint + offset
 	}
@@ -71,11 +68,18 @@ func (l FlexLayout) xCalculation(index int, allInRow []*component.Component, par
 	return childPos.Y
 }
 
-func sumWidth(selection []*component.Component) int {
+func (l FlexLayout) sumWidth(selection []*Component) int {
 	width := 0
 	for _, c := range selection {
 		width += (*c).Core().GetSize().Width
 	}
 
-	return width
+	return width + (len(selection) * l.Gap)
+}
+
+func FlexLayoutCentered() LayoutOptions {
+	return FlexLayout{
+		JustifyContent: FlexCenter,
+		AlignItems:     FlexCenter,
+	}
 }

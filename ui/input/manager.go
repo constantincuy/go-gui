@@ -44,21 +44,22 @@ func (manager *Manager) Update() {
 	}
 }
 
-func (manager *Manager) ProcessEvents(comps []*component.Component) {
-	for _, comp := range comps {
-		if manager.detectMouseCollision(*comp) {
-			if manager.justPressed {
-				var e event.Event
-				if manager.pressing() {
-					e = event.MouseClickEvent{
-						Position: manager.mousePosition,
-						Button:   manager.buttons(),
-					}
+func (manager *Manager) ProcessEvents(rootComponent component.Component) {
+	if manager.detectMouseCollision(rootComponent) {
+		if manager.justPressed {
+			var e event.Event
+			if manager.pressing() {
+				e = event.MouseClickEvent{
+					Position: manager.mousePosition,
+					Button:   manager.buttons(),
 				}
-
-				(*comp).Core().Events().Fire(e)
 			}
+
+			rootComponent.Core().Events().Fire(e)
 		}
+	}
+	for _, comp := range rootComponent.Core().Children() {
+		manager.ProcessEvents(*comp)
 	}
 }
 
