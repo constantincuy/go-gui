@@ -31,7 +31,11 @@ func (view *MainView) Mount() {
 	}
 	view.gopher = ebiten.NewImageFromImage(decoded)
 
-	view.Core().SetDisplayType(component.FlexCentered().UseGap(5).UseDirection(component.FlexRow))
+	view.Core().SetDisplayType(component.FlexCentered().UseGap(60).UseDirection(component.FlexColumn))
+	headline := view.Core().AddChild(component.NewText).(*component.Text)
+	headline.SetFontSize(30)
+	headline.SetLineHeight(30)
+	headline.SetText("Welcome to Go-Gui")
 	img := view.Core().AddChild(component.NewImage).(*component.Image)
 	img.SetImage(view.gopher)
 	view.Core().AddChild(components.NewCounter)
@@ -39,10 +43,7 @@ func (view *MainView) Mount() {
 
 func (view *MainView) Update() {}
 
-func (view *MainView) Destroy() {
-	//Dispose the image when the component is destroyed to prevent memory leaks
-	view.gopher.Dispose()
-}
+func (view *MainView) Destroy() {}
 
 func NewMainView(core component.Core) component.Component {
 	return &MainView{core: core}
