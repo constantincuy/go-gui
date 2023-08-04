@@ -1,17 +1,17 @@
 package component
 
-type FlexPositions string
+type FlexPosition string
 
 const (
-	FlexStart  FlexPositions = "flex-start"
-	FlexCenter FlexPositions = "center"
-	FlexEnd    FlexPositions = "flex-end"
+	FlexStart  FlexPosition = "flex-start"
+	FlexCenter FlexPosition = "center"
+	FlexEnd    FlexPosition = "flex-end"
 )
 
 // FlexLayout This layout can position based on horizontal and vertical layout
 type FlexLayout struct {
-	JustifyContent FlexPositions
-	AlignItems     FlexPositions
+	JustifyContent FlexPosition
+	AlignItems     FlexPosition
 	Gap            int
 }
 
@@ -81,5 +81,43 @@ func FlexLayoutCentered() LayoutOptions {
 	return FlexLayout{
 		JustifyContent: FlexCenter,
 		AlignItems:     FlexCenter,
+	}
+}
+
+func FlexLayoutCenteredWithGap(gap int) LayoutOptions {
+	return FlexLayout{
+		JustifyContent: FlexCenter,
+		AlignItems:     FlexCenter,
+		Gap:            gap,
+	}
+}
+
+func FlexLayoutHorizontalCenter(verticalAlign FlexPosition) LayoutOptions {
+	return FlexLayout{
+		JustifyContent: FlexCenter,
+		AlignItems:     verticalAlign,
+	}
+}
+
+func FlexLayoutHorizontalCenterWithGap(verticalAlign FlexPosition, gap int) LayoutOptions {
+	return FlexLayout{
+		JustifyContent: FlexCenter,
+		AlignItems:     verticalAlign,
+		Gap:            gap,
+	}
+}
+
+func FlexLayoutVerticalCentered(horizontalAlign FlexPosition) LayoutOptions {
+	return FlexLayout{
+		JustifyContent: horizontalAlign,
+		AlignItems:     FlexCenter,
+	}
+}
+
+func FlexLayoutVerticalCenteredWithGap(horizontalAlign FlexPosition, gap int) LayoutOptions {
+	return FlexLayout{
+		JustifyContent: horizontalAlign,
+		AlignItems:     FlexCenter,
+		Gap:            gap,
 	}
 }
