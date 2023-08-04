@@ -33,7 +33,7 @@ func (t *Text) Core() *Core {
 }
 
 func (t *Text) SetColor(c color.Color) {
-	t.Core().SetDirty(true)
+	t.Core().ForceFrameRedraw()
 	t.color = c
 }
 

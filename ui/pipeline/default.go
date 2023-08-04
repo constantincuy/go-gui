@@ -66,7 +66,7 @@ func (pipe *DefaultPipeline) buildSceneGraph(root component.Component, win windo
 			})
 		}
 
-		if childCore.ForcesFrameRedraw() {
+		if childCore.CausesFrameRedraw() {
 			forceRedraw = true
 			childCore.ResolveFrameRedraw()
 		}
@@ -86,9 +86,11 @@ func (pipe *DefaultPipeline) Render(screen *ebiten.Image, win window.Window) {
 	cached, forcedRedraw := pipe.getCached(win, forceRedraw)
 	sort.Sort(byZ(sceneGraph))
 
-	for _, ref := range sceneGraph {
-		c := ref.Component
-		drawComponent(cached, c, ref.ComputedPosition, forcedRedraw)
+	if forcedRedraw {
+		for _, ref := range sceneGraph {
+			c := ref.Component
+			drawComponent(cached, c, ref.ComputedPosition)
+		}
 	}
 	screen.DrawImage(cached, nil)
 }
@@ -99,18 +101,15 @@ func (pipe *DefaultPipeline) inScreen(win window.Window, comp component.Componen
 	return pos.X <= winSize.Width && pos.Y <= winSize.Height
 }
 
-func drawComponent(screen *ebiten.Image, component *component.Component, offset image.Point, forceRedraw bool) {
+func drawComponent(screen *ebiten.Image, component *component.Component, offset image.Point) {
 	core := (*component).Core()
-	if core.IsDirty() || forceRedraw {
-		size := core.GetSize()
-		pos := core.Position()
-		bounds := image.Rectangle{
-			Min: image.Point{X: pos.X + offset.X, Y: pos.Y + offset.Y},
-			Max: image.Point{X: pos.X + size.Width, Y: pos.Y + size.Height},
-		}
-		core.Render(bounds, screen)
-		core.SetDirty(false)
+	size := core.GetSize()
+	pos := core.Position().Add(offset)
+	bounds := image.Rectangle{
+		Min: pos,
+		Max: pos.Add(size.ToPoint()),
 	}
+	core.Render(bounds, screen)
 }
 
 func NewDefaultPipeline() Pipeline {

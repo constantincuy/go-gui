@@ -9,14 +9,13 @@ import (
 )
 
 type Core struct {
-	name        string
+	styleName   string
 	style       map[string]theme.Property
 	position    image.Point
 	displayType LayoutOptions
 	size        common.Size
 	canvas      *ebiten.Image
-	dataDirty   bool
-	layoutDirty bool
+	dirty       bool
 	visible     bool
 	z           int
 	children    []*Component
@@ -25,10 +24,13 @@ type Core struct {
 }
 
 func (core *Core) ApplyStyle(name string) {
-	core.dataDirty = true
-	t := theme.Engine.GetTheme()
-	s := t.Select(name)
-	core.style = s
+	if name != core.styleName {
+		core.ForceFrameRedraw()
+		t := theme.Engine.GetTheme()
+		s := t.Select(name)
+		core.style = s
+		core.styleName = name
+	}
 }
 
 func (core *Core) Style() *map[string]theme.Property {
@@ -61,8 +63,10 @@ func (core *Core) AddChild(factory func(core Core) Component) Component {
 }
 
 func (core *Core) SetZ(z int) {
-	core.layoutDirty = true
-	core.z = z
+	if core.z != z {
+		core.ForceFrameRedraw()
+		core.z = z
+	}
 }
 
 func (core *Core) GetZ() int {
@@ -74,37 +78,26 @@ func (core *Core) IsVisible() bool {
 }
 
 func (core *Core) SetVisible(visible bool) {
-	core.layoutDirty = true
-	core.visible = visible
+	if core.visible != visible {
+		core.ForceFrameRedraw()
+		core.visible = visible
+	}
 }
 
-func (core *Core) ForcesFrameRedraw() bool {
-	return core.layoutDirty
+func (core *Core) CausesFrameRedraw() bool {
+	return core.dirty
 }
 
 func (core *Core) ResolveFrameRedraw() {
-	core.layoutDirty = false
-}
-
-func (core *Core) IsDirty() bool {
-	return core.dataDirty
-}
-
-func (core *Core) SetDirty(dirty bool) {
-	core.dataDirty = dirty
+	core.dirty = false
 }
 
 func (core *Core) ForceFrameRedraw() {
-	core.layoutDirty = true
+	core.dirty = true
 }
 
 func (core *Core) Move(point image.Point) {
-	core.layoutDirty = true
-	cur := core.Position()
-	core.SetPosition(image.Point{
-		X: cur.X + point.X,
-		Y: cur.Y + point.Y,
-	})
+	core.SetPosition(core.Position().Add(point))
 }
 
 func (core *Core) MoveXY(x int, y int) {
@@ -119,8 +112,10 @@ func (core *Core) Position() image.Point {
 }
 
 func (core *Core) SetPosition(point image.Point) {
-	core.layoutDirty = true
-	core.position = point
+	if !core.position.Eq(point) {
+		core.ForceFrameRedraw()
+		core.position = point
+	}
 }
 
 func (core *Core) SetPositionXY(x int, y int) {
@@ -131,8 +126,10 @@ func (core *Core) SetPositionXY(x int, y int) {
 }
 
 func (core *Core) SetSize(size common.Size) {
-	core.layoutDirty = true
-	core.size = size
+	if core.size != size {
+		core.ForceFrameRedraw()
+		core.size = size
+	}
 }
 
 func (core *Core) GetSize() common.Size {
@@ -156,10 +153,9 @@ func NewCore() Core {
 	// Always set dirty to true on creation to trigger initial render
 	return Core{
 		canvas:      nil,
-		dataDirty:   true,
+		dirty:       true,
 		size:        common.Size{Width: 0, Height: 0},
 		visible:     true,
-		layoutDirty: true,
 		displayType: BlockLayout{},
 	}
 }
