@@ -44,24 +44,12 @@ func (app *App) Update() error {
 		app.setCurrentTitle(app.currentWindow.GetTitle())
 	}
 
-	app.inputManager.Update()
-
 	v := *app.currentWindow.GetView()
-	app.inputManager.ProcessEvents(v.Core().Children())
-	updateRecursive(v.Core().Children())
+	app.inputManager.Update()
+	app.inputManager.ProcessEvents(v)
+	component.Engine.UpdateRecursive(v)
+	component.Engine.RecalculatePositions(v)
 	return nil
-}
-
-func updateRecursive(comps []*component.Component) {
-	for _, comp := range comps {
-		(*comp).Update()
-		compCore := (*comp).Core()
-		for _, a := range compCore.Children() {
-			(*a).Update()
-		}
-
-		updateRecursive(compCore.Children())
-	}
 }
 
 func (app *App) Draw(screen *ebiten.Image) {

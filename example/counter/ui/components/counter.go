@@ -2,6 +2,7 @@ package components
 
 import (
 	"fmt"
+	"github.com/constantincuy/go-gui/ui/common"
 	"github.com/constantincuy/go-gui/ui/component"
 	"github.com/constantincuy/go-gui/ui/event"
 )
@@ -44,5 +45,9 @@ func (c *Counter) Destroy() {
 
 // NewCounter Factory for `AddChild` method `c.Core().AddChild(NewCounter)`
 func NewCounter(core component.Core) component.Component {
+	core.SetSize(common.Size{
+		Width:  120,
+		Height: 35,
+	})
 	return &Counter{core: core}
 }

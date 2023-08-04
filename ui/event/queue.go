@@ -5,7 +5,9 @@ type Queue struct {
 }
 
 func (q *Queue) Fire(event Event) {
-	q.listener(event)
+	if q.listener != nil {
+		q.listener(event)
+	}
 }
 
 func (q *Queue) On(listener func(event Event)) {

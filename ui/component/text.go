@@ -22,7 +22,7 @@ type Text struct {
 func (t *Text) Mount() {
 	t.core.OnRender(func(bounds image.Rectangle, screen *ebiten.Image) {
 		ff, _ := font.Manager.GetFontFace(t.font, t.size, t.lineHeight)
-		text.Draw(screen, t.text, ff, bounds.Min.X, bounds.Min.Y+int(t.lineHeight), t.color)
+		text.Draw(screen, t.text, ff, bounds.Min.X-int(t.size), bounds.Min.Y+3, t.color)
 	})
 }
 
@@ -99,5 +99,5 @@ func NewText(core Core) Component {
 		Height: 16,
 	})
 	col := color.RGBA{R: 0xff, G: 0xff, B: 0xff, A: 0xff}
-	return &Text{core: core, color: col, size: 14, font: "Segoe-UI", lineHeight: 16}
+	return &Text{core: core, color: col, size: 14, font: "Segoe-UI", lineHeight: 14}
 }
