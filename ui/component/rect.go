@@ -1,7 +1,6 @@
 package component
 
 import (
-	"fmt"
 	"github.com/constantincuy/go-gui/ui/theme"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
@@ -12,6 +11,9 @@ import (
 type Rect struct {
 	core          Core
 	updateCounter int
+	border        int
+	borderColor   color.RGBA
+	background    color.RGBA
 }
 
 func (box *Rect) Core() *Core {
@@ -20,42 +22,51 @@ func (box *Rect) Core() *Core {
 
 func (box *Rect) Mount() {
 	box.Core().ApplyStyle("rect")
+	box.Core().OnStyleChange(func(property theme.Property) {
+		switch property.Name {
+		case "border":
+			px, _ := property.AsPX()
+			box.border = px
+		case "border-color":
+			bc, _ := property.AsColor()
+			box.borderColor = bc
+		case "background":
+			bg, _ := property.AsColor()
+			box.background = bg
+		}
+	})
 	box.core.OnRender(func(bounds image.Rectangle, screen *ebiten.Image) {
-		vector.DrawFilledRect(screen, float32(bounds.Min.X), float32(bounds.Min.Y), float32(box.core.GetSize().Width), float32(box.core.GetSize().Height), box.getBackgroundOrDefault(), false)
+		if box.border > 0 {
+			vector.DrawFilledRect(screen, float32(bounds.Min.X), float32(bounds.Min.Y), float32(box.core.GetSize().Width), float32(box.core.GetSize().Height), box.borderColor, false)
+		}
+		vector.DrawFilledRect(screen, float32(bounds.Min.X+box.border), float32(bounds.Min.Y+box.border), float32(box.core.GetSize().Width-(box.border*2)), float32(box.core.GetSize().Height-(box.border*2)), box.background, false)
 	})
 }
 
 func (box *Rect) Destroy() {}
 
-func (box *Rect) SetColor(c color.Color) {
-	box.core.ForceFrameRedraw()
-	r, g, b, _ := c.RGBA()
-	style := box.Core().Style()
-	(*style)["background"] = theme.Property{
-		Name:  "background",
-		Value: fmt.Sprintf("#%02x%02x%02x", r, g, b),
-	}
+func (box *Rect) SetColor(c color.RGBA) {
+	box.Core().ApplyColorProperty("background", c)
 }
 
-func (box *Rect) GetColor() color.Color {
-	return box.getBackgroundOrDefault()
+func (box *Rect) GetColor() color.RGBA {
+	return box.background
 }
 
-func (box *Rect) getBackgroundOrDefault() color.RGBA {
-	prop, exists := box.Core().style["background"]
-	if exists {
-		c, e := prop.AsColor()
-		if e == nil {
-			return c
-		}
-	}
+func (box *Rect) SetBorder(b int) {
+	box.Core().ApplyPixelProperty("border", b)
+}
 
-	return color.RGBA{
-		R: 0xff,
-		G: 0xff,
-		B: 0xff,
-		A: 0xff,
-	}
+func (box *Rect) GetBorder() int {
+	return box.border
+}
+
+func (box *Rect) SetBorderColor(c color.RGBA) {
+	box.Core().ApplyColorProperty("border-color", c)
+}
+
+func (box *Rect) GetBorderColor() color.RGBA {
+	return box.borderColor
 }
 
 func (box *Rect) Update() {}

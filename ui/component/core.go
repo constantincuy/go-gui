@@ -1,26 +1,31 @@
 package component
 
 import (
+	"fmt"
 	"github.com/constantincuy/go-gui/ui/common"
 	"github.com/constantincuy/go-gui/ui/event"
 	"github.com/constantincuy/go-gui/ui/theme"
 	"github.com/hajimehoshi/ebiten/v2"
 	"image"
+	"image/color"
 )
 
+type StyleListener func(property theme.Property)
+
 type Core struct {
-	styleName   string
-	style       map[string]theme.Property
-	position    image.Point
-	displayType LayoutOptions
-	size        common.Size
-	canvas      *ebiten.Image
-	dirty       bool
-	visible     bool
-	z           int
-	children    []*Component
-	renderer    func(bounds image.Rectangle, screen *ebiten.Image)
-	eventQueue  event.Queue
+	styleName      string
+	style          map[string]theme.Property
+	position       image.Point
+	displayType    LayoutOptions
+	size           common.Size
+	canvas         *ebiten.Image
+	dirty          bool
+	visible        bool
+	z              int
+	children       []*Component
+	renderer       func(bounds image.Rectangle, screen *ebiten.Image)
+	eventQueue     event.Queue
+	styleListeners []StyleListener
 }
 
 func (core *Core) ApplyStyle(name string) {
@@ -28,13 +33,69 @@ func (core *Core) ApplyStyle(name string) {
 		core.ForceFrameRedraw()
 		t := theme.Engine.GetTheme()
 		s := t.Select(name)
-		core.style = s
 		core.styleName = name
+		core.style = make(map[string]theme.Property)
+		for _, key := range s {
+			core.ApplyProperty(key)
+		}
 	}
+}
+
+func (core *Core) ApplyPixelProperty(name string, px int) {
+	core.ApplyPropertyValue(name, fmt.Sprintf("%dpx", px))
+}
+
+func (core *Core) ApplyColorProperty(name string, color color.RGBA) {
+	core.ApplyPropertyValue(name, fmt.Sprintf("#%02x%02x%02x", color.R, color.G, color.B))
+}
+func (core *Core) ApplyPropertyValue(name string, value string) {
+	core.ApplyProperty(theme.Property{
+		Name:  name,
+		Value: value,
+	})
+}
+
+func (core *Core) ApplyProperty(prop theme.Property) {
+	core.style[prop.Name] = prop
+	for _, l := range core.styleListeners {
+		l(prop)
+	}
+	core.ForceFrameRedraw()
+}
+
+func (core *Core) OnStyleChange(listener StyleListener) {
+	core.styleListeners = append(core.styleListeners, listener)
 }
 
 func (core *Core) Style() *map[string]theme.Property {
 	return &core.style
+}
+
+func (core *Core) GetPixelProperty(name string) int {
+	prop, exists := core.style[name]
+
+	if !exists {
+		return 0
+	}
+
+	px, _ := prop.AsPX()
+	return px
+}
+
+func (core *Core) GetColorProperty(name string, fallbackColor color.RGBA) color.RGBA {
+	prop, exists := core.style[name]
+
+	if !exists {
+		return fallbackColor
+	}
+
+	px, err := prop.AsColor()
+
+	if err != nil {
+		return fallbackColor
+	}
+
+	return px
 }
 
 func (core *Core) Events() *event.Queue {
