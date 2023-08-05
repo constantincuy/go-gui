@@ -152,6 +152,7 @@ func (core *Core) Destroy() {
 func NewCore() Core {
 	// Always set dirty to true on creation to trigger initial render
 	return Core{
+		eventQueue:  event.NewEventQueue(),
 		canvas:      nil,
 		dirty:       true,
 		size:        common.Size{Width: 0, Height: 0},
