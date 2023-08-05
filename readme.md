@@ -8,6 +8,10 @@ common challenges in low level UI rendering.
 
 (See [Counter Example](example/counter))
 
+
+## Getting Started
+For a fast introduction take a look at the [Getting Started](docs/getting-started.md) guide.
+
 ## Examples
 - [Counter Example](example/counter)
 - [Dynamic Content Example](example/dynamic-content)
@@ -61,16 +65,15 @@ func (c *Counter) Core() *component.Core {
 }
 
 func (c *Counter) Mount() {
+	// Adding a button to our counter component
 	c.button = c.Core().AddChild(component.NewButton).(*component.Button)
 	c.counter = 0
 	c.setCurrentCount()
 
-	c.Core().Events().On(func(e event.Event) {
-		switch e.(type) {
-		case event.MouseClickEvent:
-			c.counter++
-			c.setCurrentCount()
-		}
+	// Register click listener to increment the count state
+	c.button.OnClick(func(e event.Event) {
+		c.counter++
+		c.setCurrentCount()
 	})
 }
 
