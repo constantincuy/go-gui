@@ -8,11 +8,12 @@ import (
 )
 
 type Button struct {
-	core       Core
-	background *Rect
-	text       *Text
-	counter    int
-	clicked    bool
+	core          Core
+	background    *Rect
+	text          *Text
+	counter       int
+	clicked       bool
+	clickListener func()
 }
 
 func (b *Button) Core() *Core {
@@ -39,9 +40,16 @@ func (b *Button) Mount() {
 			if slices.Contains(e.Button, ebiten.MouseButtonLeft) {
 				b.background.Core().ApplyStyle("button>body:active")
 				b.clicked = true
+				if b.clickListener != nil {
+					b.clickListener()
+				}
 			}
 		}
 	})
+}
+
+func (b *Button) OnClick(clickFn func()) {
+	b.clickListener = clickFn
 }
 
 func (b *Button) SetText(text string) {

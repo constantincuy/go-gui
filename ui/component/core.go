@@ -2,6 +2,7 @@ package component
 
 import (
 	"fmt"
+	"github.com/constantincuy/go-gui/ui/array"
 	"github.com/constantincuy/go-gui/ui/common"
 	"github.com/constantincuy/go-gui/ui/event"
 	"github.com/constantincuy/go-gui/ui/theme"
@@ -123,6 +124,15 @@ func (core *Core) AddChild(factory func(core Core) Component) Component {
 	return child
 }
 
+func (core *Core) RemoveChild(child *Component) {
+	for _, c := range (*child).Core().Children() {
+		(*child).Core().RemoveChild(c)
+	}
+	(*child).Destroy()
+	core.children = array.Remove(core.children, func(cur *Component) bool { return *cur == *child })
+	core.ForceFrameRedraw()
+}
+
 func (core *Core) SetZ(z int) {
 	if core.z != z {
 		core.ForceFrameRedraw()
@@ -174,8 +184,8 @@ func (core *Core) Position() image.Point {
 
 func (core *Core) SetPosition(point image.Point) {
 	if !core.position.Eq(point) {
-		core.ForceFrameRedraw()
 		core.position = point
+		core.ForceFrameRedraw()
 	}
 }
 
