@@ -2,6 +2,9 @@ package component
 
 import (
 	"github.com/constantincuy/go-gui/ui/common"
+	"github.com/constantincuy/go-gui/ui/event"
+	"github.com/hajimehoshi/ebiten/v2"
+	"golang.org/x/exp/slices"
 )
 
 type Button struct {
@@ -9,6 +12,7 @@ type Button struct {
 	background *Rect
 	text       *Text
 	counter    int
+	clicked    bool
 }
 
 func (b *Button) Core() *Core {
@@ -28,6 +32,16 @@ func (b *Button) Mount() {
 
 	b.background.Core().ApplyStyle("button>body")
 	b.text.Core().ApplyStyle("button>label")
+
+	b.Core().Events().On(func(e event.Event) {
+		switch e := e.(type) {
+		case event.MouseClickEvent:
+			if slices.Contains(e.Button, ebiten.MouseButtonLeft) {
+				b.background.Core().ApplyStyle("button>body:active")
+				b.clicked = true
+			}
+		}
+	})
 }
 
 func (b *Button) SetText(text string) {
@@ -39,6 +53,14 @@ func (b *Button) Text() string {
 }
 
 func (b *Button) Update() {
+	if b.clicked {
+		if b.counter == 5 {
+			b.counter = 0
+			b.clicked = false
+			b.background.Core().ApplyStyle("button>body")
+		}
+		b.counter++
+	}
 }
 
 func (b *Button) Destroy() {

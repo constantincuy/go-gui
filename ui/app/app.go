@@ -45,7 +45,7 @@ func (app *App) Update() error {
 
 	v := *app.currentWindow.GetView()
 	app.inputManager.Update()
-	app.inputManager.ProcessEvents(v)
+	app.inputManager.ProcessEvents(v, v.Core().Position())
 	component.Engine.UpdateRecursive(v)
 	component.Engine.RecalculatePositions(v)
 	return nil

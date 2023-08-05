@@ -1,15 +1,21 @@
 package event
 
 type Queue struct {
-	listener func(event Event)
+	listeners []func(event Event)
 }
 
 func (q *Queue) Fire(event Event) {
-	if q.listener != nil {
-		q.listener(event)
+	for _, listener := range q.listeners {
+		listener(event)
 	}
 }
 
 func (q *Queue) On(listener func(event Event)) {
-	q.listener = listener
+	q.listeners = append(q.listeners, listener)
+}
+
+func NewEventQueue() Queue {
+	return Queue{
+		listeners: make([]func(event Event), 0),
+	}
 }

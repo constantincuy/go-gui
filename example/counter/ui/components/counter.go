@@ -5,6 +5,8 @@ import (
 	"github.com/constantincuy/go-gui/ui/common"
 	"github.com/constantincuy/go-gui/ui/component"
 	"github.com/constantincuy/go-gui/ui/event"
+	"github.com/hajimehoshi/ebiten/v2"
+	"golang.org/x/exp/slices"
 )
 
 type Counter struct {
@@ -23,10 +25,12 @@ func (c *Counter) Mount() {
 	c.setCurrentCount()
 
 	c.Core().Events().On(func(e event.Event) {
-		switch e.(type) {
+		switch e := e.(type) {
 		case event.MouseClickEvent:
-			c.counter++
-			c.setCurrentCount()
+			if slices.Contains(e.Button, ebiten.MouseButtonLeft) {
+				c.counter++
+				c.setCurrentCount()
+			}
 		}
 	})
 }
