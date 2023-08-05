@@ -78,10 +78,10 @@ func NewMainView(core component.Core) component.Component {
 ```
 In Go-Gui everything is a component from a simple button to a full-fledged view. When a component is added to the screen
 it's `Mount()` method is called allowing you to add children and set default settings of your component. In our example view we 
-tell our it to use a centered flex layout which is a shorthand for `component.Flex().Justify(component.FlexCenter).Align(component.FlexCenter)`.
+tell it to use a centered flex layout which is a shorthand for `component.Flex().Justify(component.FlexCenter).Align(component.FlexCenter)`.
 Flex layouts are similar to [CSS Flexbox](https://www.w3schools.com/css/css3_flexbox.asp).
 
-After setting the layout type we now create a new Text component to our view and set its font size and the actual text to display.
+After setting the layout type we now add a new Text component to our view and set its font size and the actual text to display.
 Text is a built-in component of Go-Gui.
 
 ## What's next?
