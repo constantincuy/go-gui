@@ -1,6 +1,7 @@
 package font
 
 import (
+	"github.com/constantincuy/go-gui/ui/font/default/open_sans"
 	"github.com/tinne26/etxt"
 )
 
@@ -19,9 +20,11 @@ func (fm *manager) LoadFontFromPath(path string) error {
 func (fm *manager) TextRenderer(fontName string) *etxt.Renderer {
 	if fm.fontLib.HasFont(fontName) {
 		fm.textRenderer.SetFont(fm.fontLib.GetFont(fontName))
-		return fm.textRenderer
+	} else {
+		fm.textRenderer.SetFont(open_sans.Font())
 	}
-	return nil
+
+	return fm.textRenderer
 }
 
 func initManager() manager {
