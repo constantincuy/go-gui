@@ -1,4 +1,4 @@
-# Getting Started with Go-Gui
+# Getting Started
 To get started lets first create a new go project by executing the following commands in your favourite terminal.
 ```
 mkdir my-app
