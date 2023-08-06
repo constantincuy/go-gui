@@ -1,6 +1,6 @@
 # Components
 Components are the main building block which are used to build up a Go-Gui UI. Components allow you to 
-efficiently split up and reuse common UI elements across your application. Go-Cui components are heavily
+efficiently split up and reuse common UI elements across your application. Go-Gui components are heavily
 inspired by modern web frontend frameworks like react or vue to just name a few.
 
 
