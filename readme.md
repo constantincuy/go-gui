@@ -109,3 +109,9 @@ You can add pipelines on your app instance using the `AddPipeline()` method.
 ### Theming support
 Go-Gui supports theming via a pseudo css format this is limited to mostly colors making it easier to apply
 you color scheme ui wide or offer custom theme support for your end users.
+
+## Attribution
+This project would not be possible without
+- [ebitengine](https://ebitengine.org/)
+- [etxt](https://github.com/tinne26/etxt)
+- [Open Sans](https://fonts.google.com/specimen/Open+Sans) [[License](ui/font/default/OFL.txt)]
