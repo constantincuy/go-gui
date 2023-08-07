@@ -44,8 +44,8 @@ func (manager *Manager) Update() {
 	}
 }
 
-func (manager *Manager) ProcessEvents(rootComponent component.Component) {
-	if manager.detectMouseCollision(rootComponent) {
+func (manager *Manager) ProcessEvents(rootComponent component.Component, offset image.Point) {
+	if manager.detectMouseCollision(rootComponent, offset) {
 		if manager.justPressed {
 			var e event.Event
 			if manager.pressing() {
@@ -56,15 +56,15 @@ func (manager *Manager) ProcessEvents(rootComponent component.Component) {
 			}
 
 			rootComponent.Core().Events().Fire(e)
+			for _, comp := range rootComponent.Core().Children() {
+				manager.ProcessEvents(*comp, rootComponent.Core().Position().Add(offset))
+			}
 		}
-	}
-	for _, comp := range rootComponent.Core().Children() {
-		manager.ProcessEvents(*comp)
 	}
 }
 
 func (manager *Manager) buttons() []ebiten.MouseButton {
-	res := make([]ebiten.MouseButton, 2)
+	res := make([]ebiten.MouseButton, 0)
 	if manager.leftClick {
 		res = append(res, ebiten.MouseButtonLeft)
 	}
@@ -79,11 +79,12 @@ func (manager *Manager) pressing() bool {
 	return manager.rightClick || manager.leftClick
 }
 
-func (manager *Manager) detectMouseCollision(comp component.Component) bool {
+func (manager *Manager) detectMouseCollision(comp component.Component, offset image.Point) bool {
 	mouseX := manager.mousePosition.X
 	mouseY := manager.mousePosition.Y
-	targetX := comp.Core().Position().X
-	targetY := comp.Core().Position().Y
+	relativePos := comp.Core().Position().Add(offset)
+	targetX := relativePos.X
+	targetY := relativePos.Y
 	targetWidth := comp.Core().GetSize().Width
 	targetHeight := comp.Core().GetSize().Height
 	return (mouseX+mouseOffset.X > targetX && mouseX < targetX+targetWidth) && (mouseY+mouseOffset.Y > targetY && mouseY < targetY+targetHeight)

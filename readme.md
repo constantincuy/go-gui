@@ -1,6 +1,7 @@
 # Go-Gui
 
-Go-Gui is a simple GUI lib based on [ebitengine](https://ebitengine.org/).
+Go-Gui is a user interface library based on [ebitengine](https://ebitengine.org/). It allows you to build cross-platform
+applications that look and feel the same across all operating systems.
 This project is not meant for production use and is solely a learning project to understand
 common challenges in low level UI rendering.
 
@@ -8,35 +9,67 @@ common challenges in low level UI rendering.
 
 (See [Counter Example](example/counter))
 
+
+## Getting Started
+For a fast introduction take a look at the [Getting Started](docs/getting-started.md) guide.
+
+## Examples
+- [Counter Example](example/counter)
+- [Dynamic Content Example](example/dynamic-content)
+
 ## Features
-- Efficient rendering
 - Component based architecture
+- Data Binding
 - Event System (Click, Hover)
+- Efficient rendering
 - Customizable render pipelines
 - Theming support (pseudo CSS)
 
-### Rendering
-The default render pipeline uses a cached image in ram this image is not rerendered on every framed
-instead it is only rerendered if a component of the current view proposes a FrameRedraw by marking itself as dirty.
-As soon as something on the screen starts moving, resizing etc. frames will be rerendered as needed.
 
 ### Component based architecture
-Go-Gui uses components to build up the rendered view. 
-There are two major component types "native components" and "managed components".
+Go-Gui lets you build user interfaces out of individual pieces called components. 
+Components can be reused across your application. There are two major component types "virtual components" and "managed components".
+Go-Gui requires components to implement the `component.Component` interface. Each component is required to store a `component.Core`.
+The component core offers common methods that are needed for most UI apps.
+
+Common needed methods offered by the component core:
+- `Events()`  Allows access to the components event queue
+- `SetDisplayType(op LayoutOptions)` Used to change the components layout (BlockLayout, FlexLayout)
+- `AddChild(factory func(core Core) Component)` Add child component
+- `RemoveChild(child *Component)` Remove child component
+- `SetZ(z int)` Set Z layer (Render order)
+- `SetVisible(visible bool)` Make component visible or invisible
+- `Move(point image.Point)` Move component by X, Y offset
+- `SetPosition(point image.Point)` Set the absolute position
+- `SetSize(size common.Size)` Set the size of the component
+
+Each defined component should offer a factory method that accepts a `component.Core` and returns a new instance of the component.
+```go
+func NewRect(core Core) Component {
+	return &Rect{core: core}
+}
+```
+(Example from built-in Rect component)
+
+The core is later injected by the `AddChild()` method of `component.Core`. (See full definition above)
 
 #### Native components
 Native components register to the native render call of the render pipeline to 
-directly draw on the screen. These are mostly low level components like a box, text
-or any other geometric from. Native components mark interactions that dirty the current state 
-to let the render pipeline know when a rerender should occur.
+directly draw on the screen. These are mostly low level elements like a rect, text
+or any other geometric from. Native components can force frame redraws if their properties are changed (e.g. color, border, text value).
 
-#### Managed Components
-Managed Components don't draw to the screen instead they compose different managed or native components
-to a new reusable block. A button is an example for this its made out of a Box and Text native component.
-The engine manages when a component should be rerendered based on their children native components dirty flag or if the layout of the
-managed component changes.
+The following native components are provided as built-ins:
+- Text (`component.Text`, `component.NewText(core component.Core)`)
+- Rect (`component.Rect`, `component.NewRect(core component.Core)`)
 
-Counter button example (managed component):
+#### Virtual Components
+Virtual Components don't draw to the screen instead they compose different virtual or native components
+to a new reusable piece. A button is an example for this its made out of a Rect and Text native component.
+
+The following virtual components are provided as built-ins:
+- Button (`component.Button`, `component.NewButton(core component.Core)`)
+
+Counter button example (virtual component):
 ```go
 package components
 
@@ -46,10 +79,11 @@ import (
 	"github.com/constantincuy/go-gui/ui/event"
 )
 
+
 type Counter struct {
-	core    component.Core
-	counter int
-	button  *component.Button
+	core         component.Core
+	counterState component.State[int]
+	button       *component.Button
 }
 
 func (c *Counter) Core() *component.Core {
@@ -58,20 +92,16 @@ func (c *Counter) Core() *component.Core {
 
 func (c *Counter) Mount() {
 	c.button = c.Core().AddChild(component.NewButton).(*component.Button)
-	c.counter = 0
-	c.setCurrentCount()
+	c.counterState = component.NewState(0)
+	c.counterState.OnChange(c.setCurrentCount)
 
-	c.Core().Events().On(func(e event.Event) {
-		switch e.(type) {
-		case event.MouseClickEvent:
-			c.counter++
-			c.setCurrentCount()
-		}
+	c.button.OnClick(func() {
+		c.counterState.SetState(c.counterState.Get() + 1)
 	})
 }
 
-func (c *Counter) setCurrentCount() {
-	c.button.SetText(fmt.Sprintf("Clicked %d times", c.counter))
+func (c *Counter) setCurrentCount(count int) {
+	c.button.SetText(fmt.Sprintf("Clicked %d times", count))
 }
 
 func (c *Counter) Update() {
@@ -89,16 +119,52 @@ func NewCounter(core component.Core) component.Component {
 
 ```
 
+Read more about components in the [docs](docs/components.md).
+
+### Data Binding
+With state objects you can easily keep your view up to date with your apps internal state.
+```go
+// Add a button to display the state
+button := c.Core().AddChild(component.NewButton).(*component.Button)
+
+// Defining a new state with an initial state of 0 
+counterState := component.NewState(0)
+
+// Whenever the state is updated set the text of the button to the current count
+counterState.OnChange(func(count int) {
+    button.SetText(fmt.Sprintf("Clicked %d times", count))
+})
+
+// When the button is clicked increase the counterState
+button.OnClick(func() {
+    c.counterState.SetState(c.counterState.Get() + 1)
+})
+```
+
 ### Event System
 Go-Gui supports a rudimentary event system for now (Only mouse events click/hover).
-Every component can listen to relevant events by registering a listener in its `Mount()` function via the components 
+Every component can listen to relevant events by registering a listener in its `Mount()` method via the components 
 core and update its state accordingly.
+
+Advanced event handling including keyboard events are planed.
+
+### Rendering
+The default render pipeline uses a cached image in ram this image is not redrawn on every frame.
+Go-Gui refreshes the cached image automatically when it detects that properties of components in the current
+view changed. This ensures that we don't waste resources when the app is doing nothing instead Go-Gui just displays a static
+image.
 
 ### Customizable render pipelines
 It's possible to completely customize the render pipeline for your own use-case. Go-Gui includes 2 render pipelines
-the default pipeline responsible for rendering the ui components and a additional one that is used for debugging (Draws debug information on screen).
+the default pipeline responsible for rendering the ui components and a additional one that is used for debugging (Draws debug information on the screen).
 You can add pipelines on your app instance using the `AddPipeline()` method.
 
 ### Theming support
-Go-Gui supports theming via a pseudo css format this is limited to mostly colors making it easier to apply
-you color scheme ui wide or offer custom theme support for your end users.
+Go-Gui supports theming via a pseudo CSS format this is limited to mostly colors making it easier to apply
+you color scheme UI wide or offer custom theme support for your end users.
+
+## Attribution
+This project would not be possible without
+- [ebitengine](https://ebitengine.org/)
+- [etxt](https://github.com/tinne26/etxt)
+- [Open Sans](https://fonts.google.com/specimen/Open+Sans) [[License](ui/font/default/OFL.txt)]

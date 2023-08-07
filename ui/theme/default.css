@@ -1,10 +1,15 @@
 button>body {
     background: #343434;
-}
-button>label {
-    color: #ffffff;
+    border: 1px;
+    border-color: #474747;
 }
 
-text {
-    font-size: 12px;
+button>body:active {
+    background: #282828;
+    border: 1px;
+    border-color: #3f3f3f;
+}
+
+button>text {
+    color: #ffffff;
 }

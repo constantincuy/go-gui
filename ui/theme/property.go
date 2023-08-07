@@ -3,6 +3,7 @@ package theme
 import (
 	"errors"
 	"image/color"
+	"strconv"
 )
 
 type Property struct {
@@ -11,6 +12,22 @@ type Property struct {
 }
 
 var errInvalidFormat = errors.New("invalid format")
+
+func (prop Property) AsPX() (int, error) {
+	strLen := len(prop.Value)
+	if prop.Value[strLen-2:] != "px" {
+		return 0, errors.New("value is not a pixel value")
+	}
+
+	pxStr := prop.Value[:strLen-2]
+
+	i, err := strconv.Atoi(pxStr)
+	if err != nil {
+		return 0, err
+	}
+
+	return i, nil
+}
 
 func (prop Property) AsColor() (c color.RGBA, err error) {
 	s := prop.Value

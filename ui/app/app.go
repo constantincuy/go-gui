@@ -2,7 +2,6 @@ package app
 
 import (
 	"github.com/constantincuy/go-gui/ui/component"
-	"github.com/constantincuy/go-gui/ui/font"
 	"github.com/constantincuy/go-gui/ui/input"
 	"github.com/constantincuy/go-gui/ui/pipeline"
 	"github.com/constantincuy/go-gui/ui/theme"
@@ -46,7 +45,7 @@ func (app *App) Update() error {
 
 	v := *app.currentWindow.GetView()
 	app.inputManager.Update()
-	app.inputManager.ProcessEvents(v)
+	app.inputManager.ProcessEvents(v, v.Core().Position())
 	component.Engine.UpdateRecursive(v)
 	component.Engine.RecalculatePositions(v)
 	return nil
@@ -88,11 +87,6 @@ func NewApp(win window.Window) App {
 	app.SetWindow(win)
 	app.AddPipeline(pipeline.NewDefaultPipeline())
 	app.inputManager = input.NewManager()
-	//TODO: Cross platform solution
-	err := font.Manager.LoadFontFromPath("C:\\Windows\\Fonts\\segoeui.ttf")
-	if err != nil {
-		log.Println("Could not load default font not on windows?", err)
-	}
 
 	return app
 }

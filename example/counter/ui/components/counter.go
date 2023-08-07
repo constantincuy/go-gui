@@ -4,13 +4,12 @@ import (
 	"fmt"
 	"github.com/constantincuy/go-gui/ui/common"
 	"github.com/constantincuy/go-gui/ui/component"
-	"github.com/constantincuy/go-gui/ui/event"
 )
 
 type Counter struct {
-	core    component.Core
-	counter int
-	button  *component.Button
+	core         component.Core
+	counterState component.State[int]
+	button       *component.Button
 }
 
 func (c *Counter) Core() *component.Core {
@@ -19,20 +18,16 @@ func (c *Counter) Core() *component.Core {
 
 func (c *Counter) Mount() {
 	c.button = c.Core().AddChild(component.NewButton).(*component.Button)
-	c.counter = 0
-	c.setCurrentCount()
+	c.counterState = component.NewState(0)
+	c.counterState.OnChange(c.setCurrentCount)
 
-	c.Core().Events().On(func(e event.Event) {
-		switch e.(type) {
-		case event.MouseClickEvent:
-			c.counter++
-			c.setCurrentCount()
-		}
+	c.button.OnClick(func() {
+		c.counterState.SetState(c.counterState.Get() + 1)
 	})
 }
 
-func (c *Counter) setCurrentCount() {
-	c.button.SetText(fmt.Sprintf("Clicked %d times", c.counter))
+func (c *Counter) setCurrentCount(count int) {
+	c.button.SetText(fmt.Sprintf("Clicked %d times", count))
 }
 
 func (c *Counter) Update() {
