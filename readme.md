@@ -19,6 +19,7 @@ For a fast introduction take a look at the [Getting Started](docs/getting-starte
 ## Features
 - Efficient rendering
 - Component based architecture
+- Data Binding
 - Event System (Click, Hover)
 - Customizable render pipelines
 - Theming support (pseudo CSS)
@@ -38,13 +39,13 @@ directly draw on the screen. These are mostly low level components like a box, t
 or any other geometric from. Native components mark interactions that dirty the current state 
 to let the render pipeline know when a rerender should occur.
 
-#### Managed Components
-Managed Components don't draw to the screen instead they compose different managed or native components
-to a new reusable block. A button is an example for this its made out of a Box and Text native component.
-The engine manages when a component should be rerendered based on their children native components dirty flag or if the layout of the
-managed component changes.
+#### Virtual Components
+Virtual Components don't draw to the screen instead they compose different virtual or native components
+to a new reusable block. A button is an example for this its made out of a Rect and Text native component.
+The library manages when a component should be rerendered based on their children native components dirty flag or if the layout of the
+virtual component changes.
 
-Counter button example (managed component):
+Counter button example (virtual component):
 ```go
 package components
 
@@ -54,10 +55,11 @@ import (
 	"github.com/constantincuy/go-gui/ui/event"
 )
 
+
 type Counter struct {
-	core    component.Core
-	counter int
-	button  *component.Button
+	core         component.Core
+	counterState component.State[int]
+	button       *component.Button
 }
 
 func (c *Counter) Core() *component.Core {
@@ -65,20 +67,17 @@ func (c *Counter) Core() *component.Core {
 }
 
 func (c *Counter) Mount() {
-	// Adding a button to our counter component
 	c.button = c.Core().AddChild(component.NewButton).(*component.Button)
-	c.counter = 0
-	c.setCurrentCount()
+	c.counterState = component.NewState(0)
+	c.counterState.OnChange(c.setCurrentCount)
 
-	// Register click listener to increment the count state
-	c.button.OnClick(func(e event.Event) {
-		c.counter++
-		c.setCurrentCount()
+	c.button.OnClick(func() {
+		c.counterState.SetState(c.counterState.Get() + 1)
 	})
 }
 
-func (c *Counter) setCurrentCount() {
-	c.button.SetText(fmt.Sprintf("Clicked %d times", c.counter))
+func (c *Counter) setCurrentCount(count int) {
+	c.button.SetText(fmt.Sprintf("Clicked %d times", count))
 }
 
 func (c *Counter) Update() {
@@ -95,6 +94,26 @@ func NewCounter(core component.Core) component.Component {
 }
 
 ```
+
+### Data Binding
+With state objects you can easily keep your rendered view up to date with your apps internal state.
+```go
+    // Add a button which should represent the state
+	button := c.Core().AddChild(component.NewButton).(*component.Button)
+	// Defining a new state with an initial state of 0 
+	counterState := component.NewState(0)
+	
+	// Whenever the state is updated set the text of the button to the current count
+	counterState.OnChange(func(count int) {
+		button.SetText(fmt.Sprintf("Clicked %d times", count))
+	})
+
+	// When the button is clicked increase the counterState
+	button.OnClick(func() {
+		c.counterState.SetState(c.counterState.Get() + 1)
+	})
+```
+
 
 ### Event System
 Go-Gui supports a rudimentary event system for now (Only mouse events click/hover).
