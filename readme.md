@@ -98,7 +98,7 @@ func NewCounter(core component.Core) component.Component {
 ### Data Binding
 With state objects you can easily keep your view up to date with your apps internal state.
 ```go
-    // Add a button which should represent the state
+    // Add a button to display the state
 	button := c.Core().AddChild(component.NewButton).(*component.Button)
 	// Defining a new state with an initial state of 0 
 	counterState := component.NewState(0)
