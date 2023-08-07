@@ -98,21 +98,21 @@ func NewCounter(core component.Core) component.Component {
 ### Data Binding
 With state objects you can easily keep your view up to date with your apps internal state.
 ```go
-        // Add a button to display the state
-	button := c.Core().AddChild(component.NewButton).(*component.Button)
-	
-	// Defining a new state with an initial state of 0 
-	counterState := component.NewState(0)
-	
-	// Whenever the state is updated set the text of the button to the current count
-	counterState.OnChange(func(count int) {
-		button.SetText(fmt.Sprintf("Clicked %d times", count))
-	})
+// Add a button to display the state
+button := c.Core().AddChild(component.NewButton).(*component.Button)
 
-	// When the button is clicked increase the counterState
-	button.OnClick(func() {
-		c.counterState.SetState(c.counterState.Get() + 1)
-	})
+// Defining a new state with an initial state of 0 
+counterState := component.NewState(0)
+
+// Whenever the state is updated set the text of the button to the current count
+counterState.OnChange(func(count int) {
+    button.SetText(fmt.Sprintf("Clicked %d times", count))
+})
+
+// When the button is clicked increase the counterState
+button.OnClick(func() {
+    c.counterState.SetState(c.counterState.Get() + 1)
+})
 ```
 
 
