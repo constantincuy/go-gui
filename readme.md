@@ -16,10 +16,12 @@ For a fast introduction take a look at the [Getting Started](docs/getting-starte
 ## Examples
 - [Counter Example](example/counter)
 - [Dynamic Content Example](example/dynamic-content)
+- [Layout Example](example/layout)
 
 ## Features
 - Component based architecture
 - Data Binding
+- Layout system (FlexLayout, GridLayout)
 - Event System (Click, Hover)
 - Efficient rendering
 - Customizable render pipelines
@@ -68,6 +70,7 @@ to a new reusable piece. A button is an example for this its made out of a Rect 
 
 The following virtual components are provided as built-ins:
 - Button (`component.Button`, `component.NewButton(core component.Core)`)
+- Container (`component.Container`, `component.NewFlexContainer(initial FlexLayout)`, `NewGridContainer(cols int, gap int)`)
 
 Counter button example (virtual component):
 ```go
