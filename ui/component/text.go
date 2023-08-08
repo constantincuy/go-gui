@@ -11,7 +11,7 @@ import (
 )
 
 type Text struct {
-	core          Core
+	core          common.Core
 	updateCounter int
 	color         color.Color
 	text          string
@@ -41,7 +41,7 @@ func (t *Text) prepareRenderer() *etxt.Renderer {
 
 func (t *Text) Destroy() {}
 
-func (t *Text) Core() *Core {
+func (t *Text) Core() *common.Core {
 	return &t.core
 }
 
@@ -115,8 +115,8 @@ func (t *Text) recalculateSize() {
 	}
 }
 
-func NewText(core Core) Component {
+func NewText(core common.Core) common.Component {
 	col := color.RGBA{R: 0xff, G: 0xff, B: 0xff, A: 0xff}
-	text := &Text{core: core, color: col, size: 12, font: "Segoe UI", lineHeight: 12}
+	text := &Text{core: core, color: col, size: 12, font: "", lineHeight: 12}
 	return text
 }

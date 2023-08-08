@@ -7,11 +7,11 @@ import (
 )
 
 type Image struct {
-	core  Core
+	core  common.Core
 	image *ebiten.Image
 }
 
-func (i *Image) Core() *Core {
+func (i *Image) Core() *common.Core {
 	return &i.core
 }
 
@@ -39,6 +39,6 @@ func (i *Image) SetImage(image *ebiten.Image) {
 	}
 }
 
-func NewImage(core Core) Component {
+func NewImage(core common.Core) common.Component {
 	return &Image{core: core}
 }

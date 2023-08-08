@@ -1,7 +1,7 @@
 package pipeline
 
 import (
-	"github.com/constantincuy/go-gui/ui/component"
+	"github.com/constantincuy/go-gui/ui/common"
 	"github.com/constantincuy/go-gui/ui/window"
 	"github.com/hajimehoshi/ebiten/v2"
 	"image"
@@ -16,7 +16,7 @@ func (pipe *DefaultPipeline) Render(screen *ebiten.Image, win window.Window) {
 	pipe.frameCache.Render(screen)
 }
 
-func drawComponent(screen *ebiten.Image, component *component.Component, computedPosition image.Point) {
+func drawComponent(screen *ebiten.Image, component *common.Component, computedPosition image.Point) {
 	core := (*component).Core()
 	size := core.GetSize()
 	bounds := image.Rectangle{

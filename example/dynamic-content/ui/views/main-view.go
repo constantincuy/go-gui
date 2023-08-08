@@ -3,19 +3,20 @@ package views
 import (
 	_ "embed"
 	"fmt"
+	"github.com/constantincuy/go-gui/ui/common"
 	"github.com/constantincuy/go-gui/ui/component"
 )
 
 type MainView struct {
-	core component.Core
+	core common.Core
 }
 
-func (view *MainView) Core() *component.Core {
+func (view *MainView) Core() *common.Core {
 	return &view.core
 }
 
 func (view *MainView) Mount() {
-	view.Core().SetDisplayType(component.FlexCentered().UseGap(20).UseDirection(component.FlexColumn))
+	view.Core().SetDisplayType(common.FlexCentered().UseGap(20).UseDirection(common.FlexColumn))
 	headline := view.Core().AddChild(component.NewText).(*component.Text)
 	headline.SetFontSize(30)
 	headline.SetLineHeight(30)
@@ -43,6 +44,6 @@ func (view *MainView) Update() {}
 
 func (view *MainView) Destroy() {}
 
-func NewMainView(core component.Core) component.Component {
+func NewMainView(core common.Core) common.Component {
 	return &MainView{core: core}
 }

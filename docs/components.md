@@ -15,12 +15,12 @@ import (
 )
 
 type Counter struct {
-	core    component.Core
+	core    common.Core
 	counter int
 	button  *component.Button
 }
 
-func (c *Counter) Core() *component.Core {
+func (c *Counter) Core() *common.Core {
 	return &c.core
 }
 
@@ -50,7 +50,7 @@ func (c *Counter) Destroy() {
 }
 
 // NewCounter Factory for `AddChild` method `c.Core().AddChild(NewCounter)`
-func NewCounter(core component.Core) component.Component {
+func NewCounter(core common.Core) common.Component {
 	return &Counter{core: core}
 }
 
@@ -69,7 +69,7 @@ this causes problems if you want to reuse the components as a child of a new com
 now you may have to copy code over from the first component to get the same result on the screen.
 
 If you need a component to add new components as child expose a public method for parent components
-to use. An example for this could be a simple grid component you may want to create a method `AddToGrid(func factory(c component.Core) component.Component)`
+to use. An example for this could be a simple grid component you may want to create a method `AddToGrid(func factory(c common.Core) common.Component)`
 
 ````go
 func (view *MainView) Mount() {

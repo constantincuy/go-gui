@@ -1,4 +1,4 @@
-package component
+package common
 
 type State[T any] struct {
 	Initial  T

@@ -1,4 +1,4 @@
-package component
+package common
 
 type Component interface {
 	Core() *Core

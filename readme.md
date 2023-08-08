@@ -30,7 +30,7 @@ For a fast introduction take a look at the [Getting Started](docs/getting-starte
 
 ### Component based architecture
 Go-Gui lets you build user interfaces out of individual pieces called components. 
-Components can be reused across your application. Go-Gui requires components to implement the `component.Component` interface. Each component is required to store a `component.Core`.
+Components can be reused across your application. Go-Gui requires components to implement the `common.Component` interface. Each component is required to store a `common.Core`.
 The component core offers methods that are needed for common operations in UI apps.
 
 Common needed methods offered by the component core:
@@ -44,7 +44,7 @@ Common needed methods offered by the component core:
 - `SetPosition(point image.Point)` Set the absolute position
 - `SetSize(size common.Size)` Set the size of the component
 
-Each defined component should offer a factory method that accepts a `component.Core` and returns a new instance of the component.
+Each defined component should offer a factory method that accepts a `common.Core` and returns a new instance of the component.
 ```go
 func NewRect(core Core) Component {
 	return &Rect{core: core}
@@ -52,7 +52,7 @@ func NewRect(core Core) Component {
 ```
 (Example from built-in Rect component)
 
-The core is later injected by the `AddChild()` method of `component.Core`. (See full definition above)
+The core is later injected by the `AddChild()` method of `common.Core`. (See full definition above)
 
 #### Native components
 Native components register to the native render call of the render pipeline to 
@@ -60,15 +60,15 @@ directly draw on the screen. These are mostly low level elements like a rect, te
 or any other geometric from. Native components can force frame redraws if their properties are changed (e.g. color, border, text value).
 
 The following native components are provided as built-ins:
-- Text (`component.Text`, `component.NewText(core component.Core)`)
-- Rect (`component.Rect`, `component.NewRect(core component.Core)`)
+- Text (`component.Text`, `component.NewText(core common.Core)`)
+- Rect (`component.Rect`, `component.NewRect(core common.Core)`)
 
 #### Virtual Components
 Virtual Components don't draw to the screen instead they compose different virtual or native components
 to a new reusable piece. A button is an example for this its made out of a Rect and Text native component.
 
 The following virtual components are provided as built-ins:
-- Button (`component.Button`, `component.NewButton(core component.Core)`)
+- Button (`component.Button`, `component.NewButton(core common.Core)`)
 - Container (`component.Container`, `component.NewFlexContainer(initial FlexLayout)`, `NewGridContainer(cols int, gap int)`)
 
 Counter button example (virtual component):
@@ -83,12 +83,12 @@ import (
 
 
 type Counter struct {
-	core         component.Core
+	core         common.Core
 	counterState component.State[int]
 	button       *component.Button
 }
 
-func (c *Counter) Core() *component.Core {
+func (c *Counter) Core() *common.Core {
 	return &c.core
 }
 
@@ -115,7 +115,7 @@ func (c *Counter) Destroy() {
 }
 
 // NewCounter Factory for `AddChild` method `c.Core().AddChild(NewCounter)`
-func NewCounter(core component.Core) component.Component {
+func NewCounter(core common.Core) common.Component {
 	return &Counter{core: core}
 }
 

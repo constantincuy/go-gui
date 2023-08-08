@@ -1,4 +1,4 @@
-package component
+package common
 
 // BlockLayout This layout does not manipulate any positions or sizes and just forwards
 // the next child components for the layout phase
