@@ -7,3 +7,7 @@ type BlockLayout struct{}
 func (l BlockLayout) ProcessLayout(comp Component) []*Component {
 	return comp.Core().Children()
 }
+
+func NewBlockLayout() LayoutOptions {
+	return BlockLayout{}
+}
