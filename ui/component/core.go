@@ -13,6 +13,8 @@ import (
 
 type StyleListener func(property theme.Property)
 
+type Factory func(core Core) Component
+
 type Core struct {
 	styleName      string
 	style          map[string]theme.Property
@@ -115,7 +117,7 @@ func (core *Core) Children() []*Component {
 	return core.children
 }
 
-func (core *Core) AddChild(factory func(core Core) Component) Component {
+func (core *Core) AddChild(factory Factory) Component {
 	newCore := NewCore()
 	child := factory(newCore)
 	child.Mount()
