@@ -52,7 +52,7 @@ func NewRect(core Core) Component {
 ```
 (Example from built-in Rect component)
 
-The core is later injected by the `AddChild()` method of `common.Core`. (See full definition above)
+The core will be injected by the `AddChild()` method of `common.Core`. (See full definition above)
 
 #### Native components
 Native components register to the native render call of the render pipeline to 
