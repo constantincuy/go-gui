@@ -2,12 +2,11 @@ package window
 
 import (
 	"github.com/constantincuy/go-gui/ui/common"
-	"github.com/constantincuy/go-gui/ui/component"
 	"image/color"
 )
 
 type DefaultWindow struct {
-	view  component.Component
+	view  common.Component
 	size  common.Size
 	color color.RGBA
 }
@@ -27,7 +26,7 @@ func (win *DefaultWindow) GetSize() common.Size {
 	return win.size
 }
 
-func (win *DefaultWindow) GetView() *component.Component {
+func (win *DefaultWindow) GetView() *common.Component {
 	return &win.view
 }
 
@@ -39,8 +38,8 @@ func (win *DefaultWindow) Layout(outsideWidth, outsideHeight int) {
 	win.view.Core().SetSize(win.size)
 }
 
-func NewDefaultWindow(viewFactory func(core component.Core) component.Component) Window {
-	view := viewFactory(component.NewCore())
+func NewDefaultWindow(viewFactory func(core common.Core) common.Component) Window {
+	view := viewFactory(common.NewCore())
 	view.Mount()
 	return &DefaultWindow{view: view, color: color.RGBA{
 		R: 0,

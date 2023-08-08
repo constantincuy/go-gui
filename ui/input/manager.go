@@ -1,7 +1,7 @@
 package input
 
 import (
-	"github.com/constantincuy/go-gui/ui/component"
+	"github.com/constantincuy/go-gui/ui/common"
 	"github.com/constantincuy/go-gui/ui/event"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -44,7 +44,7 @@ func (manager *Manager) Update() {
 	}
 }
 
-func (manager *Manager) ProcessEvents(rootComponent component.Component, offset image.Point) {
+func (manager *Manager) ProcessEvents(rootComponent common.Component, offset image.Point) {
 	if manager.detectMouseCollision(rootComponent, offset) {
 		if manager.justPressed {
 			var e event.Event
@@ -79,7 +79,7 @@ func (manager *Manager) pressing() bool {
 	return manager.rightClick || manager.leftClick
 }
 
-func (manager *Manager) detectMouseCollision(comp component.Component, offset image.Point) bool {
+func (manager *Manager) detectMouseCollision(comp common.Component, offset image.Point) bool {
 	mouseX := manager.mousePosition.X
 	mouseY := manager.mousePosition.Y
 	relativePos := comp.Core().Position().Add(offset)

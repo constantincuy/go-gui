@@ -1,7 +1,6 @@
-package component
+package common
 
 import (
-	"github.com/constantincuy/go-gui/ui/common"
 	"image"
 )
 
@@ -52,9 +51,9 @@ func (l FlexLayout) ProcessLayout(comp Component) []*Component {
 	children := comp.Core().Children()
 	for i, child := range children {
 		var y, x int
-		widthGetter := func(size common.Size) int { return size.Width }
+		widthGetter := func(size Size) int { return size.Width }
 		yGetter := func(pos image.Point) int { return pos.Y }
-		heightGetter := func(size common.Size) int { return size.Height }
+		heightGetter := func(size Size) int { return size.Height }
 		xGetter := func(pos image.Point) int { return pos.X }
 		childPos := (*child).Core().Position()
 		if l.Direction == FlexColumn {
@@ -69,7 +68,7 @@ func (l FlexLayout) ProcessLayout(comp Component) []*Component {
 	return children
 }
 
-func (l FlexLayout) groupCentricCalculation(index int, allInRow []*Component, flexPos FlexPosition, parent Component, getter func(size common.Size) int, posGetter func(pos image.Point) int, defaultValue int) int {
+func (l FlexLayout) groupCentricCalculation(index int, allInRow []*Component, flexPos FlexPosition, parent Component, getter func(size Size) int, posGetter func(pos image.Point) int, defaultValue int) int {
 	parentValue := getter(parent.Core().GetSize())
 	switch flexPos {
 	case FlexStart:
@@ -95,7 +94,7 @@ func (l FlexLayout) groupCentricCalculation(index int, allInRow []*Component, fl
 	return defaultValue
 }
 
-func (l FlexLayout) selfCentricCalculation(flexPos FlexPosition, parent Component, child *Component, getter func(size common.Size) int, defaultValue int) int {
+func (l FlexLayout) selfCentricCalculation(flexPos FlexPosition, parent Component, child *Component, getter func(size Size) int, defaultValue int) int {
 	parentValue := getter(parent.Core().GetSize())
 	childValue := getter((*child).Core().GetSize())
 	switch flexPos {
@@ -110,7 +109,7 @@ func (l FlexLayout) selfCentricCalculation(flexPos FlexPosition, parent Componen
 	return defaultValue
 }
 
-func (l FlexLayout) sumBy(selection []*Component, sumValueGetter func(size common.Size) int) int {
+func (l FlexLayout) sumBy(selection []*Component, sumValueGetter func(size Size) int) int {
 	value := 0
 	for _, c := range selection {
 		value += sumValueGetter((*c).Core().GetSize())

@@ -8,7 +8,7 @@ import (
 )
 
 type Button struct {
-	core          Core
+	core          common.Core
 	background    *Rect
 	text          *Text
 	counter       int
@@ -16,7 +16,7 @@ type Button struct {
 	clickListener func()
 }
 
-func (b *Button) Core() *Core {
+func (b *Button) Core() *common.Core {
 	return &b.core
 }
 
@@ -25,7 +25,7 @@ func (b *Button) Mount() {
 	b.Core().ApplyStyle("button")
 	size := b.Core().GetSize()
 	b.background = b.Core().AddChild(NewRect).(*Rect)
-	b.background.Core().SetDisplayType(FlexCentered())
+	b.background.Core().SetDisplayType(common.FlexCentered())
 	b.text = b.background.Core().AddChild(NewText).(*Text)
 	b.background.Core().SetSize(size)
 	b.text.SetText(defaultText)
@@ -74,7 +74,7 @@ func (b *Button) Update() {
 func (b *Button) Destroy() {
 }
 
-func NewButton(core Core) Component {
+func NewButton(core common.Core) common.Component {
 	core.SetSize(common.Size{
 		Width:  120,
 		Height: 35,

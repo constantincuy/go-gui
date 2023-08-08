@@ -5,19 +5,19 @@ import (
 	"github.com/constantincuy/go-gui/ui/component"
 )
 
-type LayoutListener func(justify, align component.FlexPosition)
+type LayoutListener func(justify, align common.FlexPosition)
 
 type FlexControl struct {
-	core     component.Core
-	listener func(justify, align component.FlexPosition)
+	core     common.Core
+	listener func(justify, align common.FlexPosition)
 }
 
-func (f *FlexControl) Core() *component.Core {
+func (f *FlexControl) Core() *common.Core {
 	return &f.core
 }
 
 func (f *FlexControl) Mount() {
-	f.Core().SetDisplayType(component.FlexCentered().UseGap(15).UseDirection(component.FlexColumn))
+	f.Core().SetDisplayType(common.FlexCentered().UseGap(15).UseDirection(common.FlexColumn))
 	headline := f.Core().AddChild(component.NewText).(*component.Text)
 	headline.SetFontSize(30)
 	headline.SetText("Flex Layout")
@@ -26,7 +26,7 @@ func (f *FlexControl) Mount() {
 	size := grid.Core().GetSize()
 	size.Width = 375
 	grid.Core().SetSize(size)
-	options := []component.FlexPosition{component.FlexStart, component.FlexCenter, component.FlexEnd}
+	options := []common.FlexPosition{common.FlexStart, common.FlexCenter, common.FlexEnd}
 	labels := []string{"Top Left", "Top Center", "Top Right", "Center Left", "Center Center", "Center Right", "Bottom Left", "Bottom Center", "Bottom Right"}
 
 	for i, label := range labels {
@@ -50,7 +50,7 @@ func (f *FlexControl) Update() {}
 
 func (f *FlexControl) Destroy() {}
 
-func NewFlexControl(core component.Core) component.Component {
+func NewFlexControl(core common.Core) common.Component {
 	core.SetSize(common.Size{
 		Width:  375,
 		Height: 200,

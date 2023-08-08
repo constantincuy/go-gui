@@ -1,9 +1,8 @@
-package component
+package common
 
 import (
 	"fmt"
 	"github.com/constantincuy/go-gui/ui/array"
-	"github.com/constantincuy/go-gui/ui/common"
 	"github.com/constantincuy/go-gui/ui/event"
 	"github.com/constantincuy/go-gui/ui/theme"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -20,8 +19,7 @@ type Core struct {
 	style          map[string]theme.Property
 	position       image.Point
 	displayType    LayoutOptions
-	size           common.Size
-	canvas         *ebiten.Image
+	size           Size
 	dirty          bool
 	visible        bool
 	z              int
@@ -198,37 +196,33 @@ func (core *Core) SetPositionXY(x int, y int) {
 	})
 }
 
-func (core *Core) SetSize(size common.Size) {
+func (core *Core) SetSize(size Size) {
 	if core.size != size {
 		core.ForceFrameRedraw()
 		core.size = size
 	}
 }
 
-func (core *Core) GetSize() common.Size {
+func (core *Core) GetSize() Size {
 	return core.size
 }
 
 func (core *Core) OnRender(renderer func(bounds image.Rectangle, screen *ebiten.Image)) {
 	core.renderer = renderer
 }
+
 func (core *Core) Render(bounds image.Rectangle, screen *ebiten.Image) {
 	if core.renderer != nil {
 		core.renderer(bounds, screen)
 	}
 }
 
-func (core *Core) Destroy() {
-	core.canvas.Dispose()
-}
-
 func NewCore() Core {
 	// Always set dirty to true on creation to trigger initial render
 	return Core{
 		eventQueue:  event.NewEventQueue(),
-		canvas:      nil,
 		dirty:       true,
-		size:        common.Size{Width: 0, Height: 0},
+		size:        Size{Width: 0, Height: 0},
 		visible:     true,
 		displayType: BlockLayout{},
 	}

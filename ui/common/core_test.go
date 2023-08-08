@@ -1,8 +1,6 @@
-package component
+package common
 
 import (
-	"github.com/constantincuy/go-gui/ui/common"
-	"github.com/constantincuy/go-gui/ui/testutils"
 	"github.com/hajimehoshi/ebiten/v2"
 	"image"
 	"reflect"
@@ -21,7 +19,7 @@ func createRenderedCore() Core {
 func TestCore_CreatingNewCoreCreatesNewFrame(t *testing.T) {
 	core := NewCore()
 	if !core.CausesFrameRedraw() {
-		t.Error(testutils.BoolError("Core should cause frame redraw on initialization", true, core.CausesFrameRedraw()))
+		t.Error(BoolError("Core should cause frame redraw on initialization", true, core.CausesFrameRedraw()))
 	}
 }
 
@@ -31,7 +29,7 @@ func TestCore_CoreCausesFrameRedraw(t *testing.T) {
 
 	core.ForceFrameRedraw()
 	if !core.CausesFrameRedraw() {
-		t.Error(testutils.BoolError("Core should cause frame redraw", true, core.CausesFrameRedraw()))
+		t.Error(BoolError("Core should cause frame redraw", true, core.CausesFrameRedraw()))
 	}
 }
 
@@ -39,7 +37,7 @@ func TestCore_CoreCausesFrameRedraw(t *testing.T) {
 func TestCore_VisibleDefault(t *testing.T) {
 	core := NewCore()
 	if !core.visible {
-		t.Error(testutils.BoolError("Core should be visible", true, core.visible))
+		t.Error(BoolError("Core should be visible", true, core.visible))
 	}
 }
 
@@ -48,7 +46,7 @@ func TestCore_SetVisible(t *testing.T) {
 	core := NewCore()
 	core.SetVisible(false)
 	if core.visible {
-		t.Error(testutils.BoolError("Core should be invisible", false, core.visible))
+		t.Error(BoolError("Core should be invisible", false, core.visible))
 	}
 }
 
@@ -58,7 +56,7 @@ func TestCore_VisibleDoesNotCauseAccidentalRedraw(t *testing.T) {
 
 	core.SetVisible(true)
 	if core.CausesFrameRedraw() {
-		t.Error(testutils.BoolError("Core should not cause frame redraw on same `visible` value", false, core.CausesFrameRedraw()))
+		t.Error(BoolError("Core should not cause frame redraw on same `visible` value", false, core.CausesFrameRedraw()))
 	}
 }
 
@@ -70,7 +68,7 @@ func TestCore_DefaultPosition(t *testing.T) {
 		Y: 0,
 	}
 	if core.Position() != expectedPos {
-		t.Error(testutils.PositionError("Core is at the wrong default position", expectedPos, core.Position()))
+		t.Error(PositionError("Core is at the wrong default position", expectedPos, core.Position()))
 	}
 }
 
@@ -83,7 +81,7 @@ func TestCore_SetPosition(t *testing.T) {
 	}
 	core.SetPosition(newPos)
 	if core.Position() != newPos {
-		t.Error(testutils.PositionError("Core is at the wrong position", newPos, core.Position()))
+		t.Error(PositionError("Core is at the wrong position", newPos, core.Position()))
 	}
 }
 
@@ -97,7 +95,7 @@ func TestCore_PositionDoesNotCauseAccidentalRedraw(t *testing.T) {
 	}
 	core.SetPosition(newPos)
 	if core.CausesFrameRedraw() {
-		t.Error(testutils.BoolError("Core should not cause frame redraw on same position value", false, core.CausesFrameRedraw()))
+		t.Error(BoolError("Core should not cause frame redraw on same position value", false, core.CausesFrameRedraw()))
 	}
 }
 
@@ -106,7 +104,7 @@ func TestCore_DefaultDisplayType(t *testing.T) {
 	core := NewCore()
 	expectedType := NewBlockLayout()
 	if core.DisplayType() != expectedType {
-		t.Error(testutils.StringError("Core has the wrong default display type", reflect.TypeOf(expectedType).String(), reflect.TypeOf(core.DisplayType()).String()))
+		t.Error(StringError("Core has the wrong default display type", reflect.TypeOf(expectedType).String(), reflect.TypeOf(core.DisplayType()).String()))
 	}
 }
 
@@ -116,7 +114,7 @@ func TestCore_SetDisplayType(t *testing.T) {
 	newType := Flex().Justify(FlexCenter)
 	core.SetDisplayType(newType)
 	if core.DisplayType() != newType {
-		t.Error(testutils.StringError("Core has the wrong display type", reflect.TypeOf(newType).String(), reflect.TypeOf(core.DisplayType()).String()))
+		t.Error(StringError("Core has the wrong display type", reflect.TypeOf(newType).String(), reflect.TypeOf(core.DisplayType()).String()))
 	}
 }
 
@@ -127,7 +125,7 @@ func TestCore_DisplayTypeDoesNotCauseAccidentalRedraw(t *testing.T) {
 	newType := NewBlockLayout()
 	core.SetDisplayType(newType)
 	if core.CausesFrameRedraw() {
-		t.Error(testutils.BoolError("Core should not cause frame redraw on same display type value", false, core.CausesFrameRedraw()))
+		t.Error(BoolError("Core should not cause frame redraw on same display type value", false, core.CausesFrameRedraw()))
 	}
 }
 
@@ -136,7 +134,7 @@ func TestCore_DefaultZ(t *testing.T) {
 	core := NewCore()
 	expectedZ := 0
 	if core.GetZ() != expectedZ {
-		t.Error(testutils.IntError("Core has the wrong default Z layer", expectedZ, core.GetZ()))
+		t.Error(IntError("Core has the wrong default Z layer", expectedZ, core.GetZ()))
 	}
 }
 
@@ -146,7 +144,7 @@ func TestCore_SetZ(t *testing.T) {
 	newZ := 10
 	core.SetZ(newZ)
 	if core.GetZ() != newZ {
-		t.Error(testutils.IntError("Core has the wrong Z layer", newZ, core.GetZ()))
+		t.Error(IntError("Core has the wrong Z layer", newZ, core.GetZ()))
 	}
 }
 
@@ -157,32 +155,32 @@ func TestCore_ZLayerDoesNotCauseAccidentalRedraw(t *testing.T) {
 	newZ := 0
 	core.SetZ(newZ)
 	if core.CausesFrameRedraw() {
-		t.Error(testutils.BoolError("Core should not cause frame redraw on same Z layer value", false, core.CausesFrameRedraw()))
+		t.Error(BoolError("Core should not cause frame redraw on same Z layer value", false, core.CausesFrameRedraw()))
 	}
 }
 
 // TestCore_DefaultSize testing if default size is 0, 0
 func TestCore_DefaultSize(t *testing.T) {
 	core := NewCore()
-	expectedSize := common.Size{
+	expectedSize := Size{
 		Width:  0,
 		Height: 0,
 	}
 	if core.GetSize() != expectedSize {
-		t.Error(testutils.SizeError("Core has the wrong default size", expectedSize, core.GetSize()))
+		t.Error(SizeError("Core has the wrong default size", expectedSize, core.GetSize()))
 	}
 }
 
 // TestCore_SetSize testing if setting the size works
 func TestCore_SetSize(t *testing.T) {
 	core := NewCore()
-	newSize := common.Size{
+	newSize := Size{
 		Width:  100,
 		Height: 100,
 	}
 	core.SetSize(newSize)
 	if core.GetSize() != newSize {
-		t.Error(testutils.SizeError("Core has the wrong size", newSize, core.GetSize()))
+		t.Error(SizeError("Core has the wrong size", newSize, core.GetSize()))
 	}
 }
 
@@ -190,13 +188,13 @@ func TestCore_SetSize(t *testing.T) {
 func TestCore_SizeDoesNotCauseAccidentalRedraw(t *testing.T) {
 	core := createRenderedCore()
 
-	newSize := common.Size{
+	newSize := Size{
 		Width:  0,
 		Height: 0,
 	}
 	core.SetSize(newSize)
 	if core.CausesFrameRedraw() {
-		t.Error(testutils.BoolError("Core should not cause frame redraw on same size value", false, core.CausesFrameRedraw()))
+		t.Error(BoolError("Core should not cause frame redraw on same size value", false, core.CausesFrameRedraw()))
 	}
 }
 
@@ -214,6 +212,6 @@ func TestCore_OnRender(t *testing.T) {
 	core.Render(bounds, nil)
 
 	if renderCount != 1 {
-		t.Error(testutils.IntError("Core did not render", 1, renderCount))
+		t.Error(IntError("Core did not render", 1, renderCount))
 	}
 }

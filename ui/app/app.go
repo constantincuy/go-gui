@@ -1,7 +1,7 @@
 package app
 
 import (
-	"github.com/constantincuy/go-gui/ui/component"
+	"github.com/constantincuy/go-gui/ui/common"
 	"github.com/constantincuy/go-gui/ui/input"
 	"github.com/constantincuy/go-gui/ui/pipeline"
 	"github.com/constantincuy/go-gui/ui/theme"
@@ -17,6 +17,7 @@ type App struct {
 	currentTitle    string
 	themePath       string
 	inputManager    input.Manager
+	componentEngine common.ComponentEngine
 }
 
 func (app *App) AddPipeline(pipe pipeline.Pipeline) {
@@ -46,8 +47,8 @@ func (app *App) Update() error {
 	v := *app.currentWindow.GetView()
 	app.inputManager.Update()
 	app.inputManager.ProcessEvents(v, v.Core().Position())
-	component.Engine.UpdateRecursive(v)
-	component.Engine.RecalculatePositions(v)
+	app.componentEngine.UpdateComponentTree(v)
+	app.componentEngine.RecalculatePositions(v)
 	return nil
 }
 

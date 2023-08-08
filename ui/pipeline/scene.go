@@ -1,7 +1,7 @@
 package pipeline
 
 import (
-	"github.com/constantincuy/go-gui/ui/component"
+	"github.com/constantincuy/go-gui/ui/common"
 	"github.com/constantincuy/go-gui/ui/window"
 	"image"
 )
@@ -18,7 +18,7 @@ func (scene *Scene) SceneGraph() ([]ComponentRef, bool) {
 	return scene.buildSceneGraph(*scene.Window.GetView(), 0, initialPos)
 }
 
-func (scene *Scene) buildSceneGraph(root component.Component, currentZLevel int, relativePosition image.Point) ([]ComponentRef, bool) {
+func (scene *Scene) buildSceneGraph(root common.Component, currentZLevel int, relativePosition image.Point) ([]ComponentRef, bool) {
 	rootComponents := root.Core().Children()
 	sceneGraph := make([]ComponentRef, 0)
 	forceRedraw := false
@@ -49,7 +49,7 @@ func (scene *Scene) buildSceneGraph(root component.Component, currentZLevel int,
 	return sceneGraph, forceRedraw
 }
 
-func (scene *Scene) inScreen(comp component.Component) bool {
+func (scene *Scene) inScreen(comp common.Component) bool {
 	winSize := scene.Window.GetSize()
 	pos := comp.Core().Position()
 	return pos.X <= winSize.Width && pos.Y <= winSize.Height

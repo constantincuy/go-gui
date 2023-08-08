@@ -1,8 +1,8 @@
-package component
+package common
 
 import (
-	"github.com/constantincuy/go-gui/ui/testutils"
-	"testing"
+	"fmt"
+	"image"
 )
 
 type testableComponent struct {
@@ -50,18 +50,22 @@ func newTestableComponent(core Core) Component {
 	return &testableComponent{core: core}
 }
 
-func TestEngine_UpdateRecursive(t *testing.T) {
-	con1 := NewGridContainer(1, 0)(NewCore()).(*Container)
-	con2 := con1.Add(NewGridContainer(1, 0)).(*Container)
-	testComp := con2.Add(newTestableComponent).(*testableComponent)
+func SizeError(message string, want, got Size) string {
+	return fmt.Sprintf("%s; want (Width: %d, Height: %d), got (Width: %d, Height: %d)", message, want.Width, want.Height, got.Width, got.Height)
+}
 
-	childUpdateCount := 0
-	testComp.OnUpdate(func() {
-		childUpdateCount++
-	})
-	Engine.UpdateRecursive(con1)
+func PositionError(message string, want, got image.Point) string {
+	return fmt.Sprintf("%s; want (X: %d, Y: %d), got (X: %d, Y: %d)", message, want.X, want.Y, got.X, got.Y)
+}
 
-	if childUpdateCount != 1 {
-		t.Error(testutils.IntError("Child component should have updated once", 1, childUpdateCount))
-	}
+func BoolError(message string, want, got bool) string {
+	return fmt.Sprintf("%s; want `%t`, got `%t`", message, want, got)
+}
+
+func StringError(message, want, got string) string {
+	return fmt.Sprintf("%s; want `%s`, got `%s`", message, want, got)
+}
+
+func IntError(message string, want, got int) string {
+	return fmt.Sprintf("%s; want `%d`, got `%d`", message, want, got)
 }

@@ -1,19 +1,17 @@
-package component
+package common
 
-var Engine engine
+type ComponentEngine struct{}
 
-type engine struct{}
-
-func (e engine) RecalculatePositions(rootComponent Component) {
+func (e ComponentEngine) RecalculatePositions(rootComponent Component) {
 	children := rootComponent.Core().DisplayType().ProcessLayout(rootComponent)
 	for _, child := range children {
 		e.RecalculatePositions(*child)
 	}
 }
 
-func (e engine) UpdateRecursive(rootComponent Component) {
+func (e ComponentEngine) UpdateComponentTree(rootComponent Component) {
 	rootComponent.Update()
 	for _, comp := range rootComponent.Core().Children() {
-		e.UpdateRecursive(*comp)
+		e.UpdateComponentTree(*comp)
 	}
 }

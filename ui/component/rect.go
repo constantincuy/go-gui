@@ -1,6 +1,7 @@
 package component
 
 import (
+	"github.com/constantincuy/go-gui/ui/common"
 	"github.com/constantincuy/go-gui/ui/theme"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
@@ -9,68 +10,68 @@ import (
 )
 
 type Rect struct {
-	core          Core
+	core          common.Core
 	updateCounter int
 	border        int
 	borderColor   color.RGBA
 	background    color.RGBA
 }
 
-func (box *Rect) Core() *Core {
-	return &box.core
+func (rect *Rect) Core() *common.Core {
+	return &rect.core
 }
 
-func (box *Rect) Mount() {
-	box.Core().ApplyStyle("rect")
-	box.Core().OnStyleChange(func(property theme.Property) {
+func (rect *Rect) Mount() {
+	rect.Core().ApplyStyle("rect")
+	rect.Core().OnStyleChange(func(property theme.Property) {
 		switch property.Name {
 		case "border":
 			px, _ := property.AsPX()
-			box.border = px
+			rect.border = px
 		case "border-color":
 			bc, _ := property.AsColor()
-			box.borderColor = bc
+			rect.borderColor = bc
 		case "background":
 			bg, _ := property.AsColor()
-			box.background = bg
+			rect.background = bg
 		}
 	})
-	box.core.OnRender(func(bounds image.Rectangle, screen *ebiten.Image) {
-		if box.border > 0 {
-			vector.DrawFilledRect(screen, float32(bounds.Min.X), float32(bounds.Min.Y), float32(box.core.GetSize().Width), float32(box.core.GetSize().Height), box.borderColor, false)
+	rect.core.OnRender(func(bounds image.Rectangle, screen *ebiten.Image) {
+		if rect.border > 0 {
+			vector.DrawFilledRect(screen, float32(bounds.Min.X), float32(bounds.Min.Y), float32(rect.core.GetSize().Width), float32(rect.core.GetSize().Height), rect.borderColor, false)
 		}
-		vector.DrawFilledRect(screen, float32(bounds.Min.X+box.border), float32(bounds.Min.Y+box.border), float32(box.core.GetSize().Width-(box.border*2)), float32(box.core.GetSize().Height-(box.border*2)), box.background, false)
+		vector.DrawFilledRect(screen, float32(bounds.Min.X+rect.border), float32(bounds.Min.Y+rect.border), float32(rect.core.GetSize().Width-(rect.border*2)), float32(rect.core.GetSize().Height-(rect.border*2)), rect.background, false)
 	})
 }
 
-func (box *Rect) Destroy() {}
+func (rect *Rect) Destroy() {}
 
-func (box *Rect) SetColor(c color.RGBA) {
-	box.Core().ApplyColorProperty("background", c)
+func (rect *Rect) SetColor(c color.RGBA) {
+	rect.Core().ApplyColorProperty("background", c)
 }
 
-func (box *Rect) GetColor() color.RGBA {
-	return box.background
+func (rect *Rect) GetColor() color.RGBA {
+	return rect.background
 }
 
-func (box *Rect) SetBorder(b int) {
-	box.Core().ApplyPixelProperty("border", b)
+func (rect *Rect) SetBorder(b int) {
+	rect.Core().ApplyPixelProperty("border", b)
 }
 
-func (box *Rect) GetBorder() int {
-	return box.border
+func (rect *Rect) GetBorder() int {
+	return rect.border
 }
 
-func (box *Rect) SetBorderColor(c color.RGBA) {
-	box.Core().ApplyColorProperty("border-color", c)
+func (rect *Rect) SetBorderColor(c color.RGBA) {
+	rect.Core().ApplyColorProperty("border-color", c)
 }
 
-func (box *Rect) GetBorderColor() color.RGBA {
-	return box.borderColor
+func (rect *Rect) GetBorderColor() color.RGBA {
+	return rect.borderColor
 }
 
-func (box *Rect) Update() {}
+func (rect *Rect) Update() {}
 
-func NewRect(core Core) Component {
+func NewRect(core common.Core) common.Component {
 	return &Rect{core: core}
 }

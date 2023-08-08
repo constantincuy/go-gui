@@ -1,6 +1,8 @@
-package component
+package common
 
-import "math"
+import (
+	"math"
+)
 
 type GridLayout struct {
 	Columns int

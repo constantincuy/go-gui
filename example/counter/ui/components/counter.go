@@ -7,18 +7,18 @@ import (
 )
 
 type Counter struct {
-	core         component.Core
-	counterState component.State[int]
+	core         common.Core
+	counterState common.State[int]
 	button       *component.Button
 }
 
-func (c *Counter) Core() *component.Core {
+func (c *Counter) Core() *common.Core {
 	return &c.core
 }
 
 func (c *Counter) Mount() {
 	c.button = c.Core().AddChild(component.NewButton).(*component.Button)
-	c.counterState = component.NewState(0)
+	c.counterState = common.NewState(0)
 	c.counterState.OnChange(c.setCurrentCount)
 
 	c.button.OnClick(func() {
@@ -39,7 +39,7 @@ func (c *Counter) Destroy() {
 }
 
 // NewCounter Factory for `AddChild` method `c.Core().AddChild(NewCounter)`
-func NewCounter(core component.Core) component.Component {
+func NewCounter(core common.Core) common.Component {
 	core.SetSize(common.Size{
 		Width:  120,
 		Height: 35,

@@ -46,11 +46,11 @@ import (
 )
 
 type MainView struct {
-	core component.Core
+	core common.Core
 }
 
 // Every component implementation needs to make it's core public
-func (view *MainView) Core() *component.Core {
+func (view *MainView) Core() *common.Core {
 	return &view.core
 }
 
@@ -72,7 +72,7 @@ func (view *MainView) Update() {}
 func (view *MainView) Destroy() {}
 
 // NewMainView A convention for components is to create a constructor that accepts a core the core is automatically created and injected by AddChild
-func NewMainView(core component.Core) component.Component {
+func NewMainView(core common.Core) common.Component {
 	return &MainView{core: core}
 }
 ```

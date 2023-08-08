@@ -1,13 +1,13 @@
 package pipeline
 
 import (
-	"github.com/constantincuy/go-gui/ui/component"
+	"github.com/constantincuy/go-gui/ui/common"
 	"image"
 )
 
 type ComponentRef struct {
-	Parent           *component.Component
-	Component        *component.Component
+	Parent           *common.Component
+	Component        *common.Component
 	ComputedZ        int
 	ComputedPosition image.Point
 }
