@@ -6,6 +6,7 @@ import (
 	"github.com/constantincuy/go-gui/ui/pipeline"
 	"github.com/constantincuy/go-gui/ui/window"
 	"image/color"
+	"os"
 )
 
 func main() {
@@ -17,6 +18,8 @@ func main() {
 		A: 0xff,
 	})
 	myApp := app.NewApp(win)
-	myApp.AddPipeline(pipeline.NewDebugPipeline())
+	if len(os.Args) > 1 && os.Args[1] == "--debug" {
+		myApp.AddPipeline(pipeline.NewDebugPipeline())
+	}
 	myApp.Start()
 }
