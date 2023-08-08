@@ -62,6 +62,7 @@ or any other geometric from. Native components can force frame redraws if their 
 The following native components are provided as built-ins:
 - Text (`component.Text`, `component.NewText(core common.Core)`)
 - Rect (`component.Rect`, `component.NewRect(core common.Core)`)
+- Image (`component.Image`, `component.NewImage(core common.Core)`)
 
 #### Virtual Components
 Virtual Components don't draw to the screen instead they compose different virtual or native components
