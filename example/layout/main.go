@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/constantincuy/go-gui/example/counter/ui/views"
+	"github.com/constantincuy/go-gui/example/layout/ui/views"
 	"github.com/constantincuy/go-gui/ui/app"
 	"github.com/constantincuy/go-gui/ui/pipeline"
 	"github.com/constantincuy/go-gui/ui/window"

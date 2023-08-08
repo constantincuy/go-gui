@@ -1,6 +1,9 @@
 package component
 
-import "github.com/constantincuy/go-gui/ui/common"
+import (
+	"github.com/constantincuy/go-gui/ui/common"
+	"image"
+)
 
 type FlexPosition string
 
@@ -50,21 +53,23 @@ func (l FlexLayout) ProcessLayout(comp Component) []*Component {
 	for i, child := range children {
 		var y, x int
 		widthGetter := func(size common.Size) int { return size.Width }
+		yGetter := func(pos image.Point) int { return pos.Y }
 		heightGetter := func(size common.Size) int { return size.Height }
+		xGetter := func(pos image.Point) int { return pos.X }
 		childPos := (*child).Core().Position()
 		if l.Direction == FlexColumn {
-			y = l.groupCentricCalculation(i, children, l.AlignItems, comp, heightGetter, childPos.Y)
+			y = l.groupCentricCalculation(i, children, l.AlignItems, comp, heightGetter, yGetter, childPos.Y)
 			x = l.selfCentricCalculation(l.JustifyContent, comp, child, widthGetter, childPos.X)
 		} else {
 			y = l.selfCentricCalculation(l.AlignItems, comp, child, heightGetter, childPos.Y)
-			x = l.groupCentricCalculation(i, children, l.JustifyContent, comp, widthGetter, childPos.X)
+			x = l.groupCentricCalculation(i, children, l.JustifyContent, comp, widthGetter, xGetter, childPos.X)
 		}
 		(*child).Core().SetPositionXY(x, y)
 	}
 	return children
 }
 
-func (l FlexLayout) groupCentricCalculation(index int, allInRow []*Component, flexPos FlexPosition, parent Component, getter func(size common.Size) int, defaultValue int) int {
+func (l FlexLayout) groupCentricCalculation(index int, allInRow []*Component, flexPos FlexPosition, parent Component, getter func(size common.Size) int, posGetter func(pos image.Point) int, defaultValue int) int {
 	parentValue := getter(parent.Core().GetSize())
 	switch flexPos {
 	case FlexStart:
@@ -74,7 +79,7 @@ func (l FlexLayout) groupCentricCalculation(index int, allInRow []*Component, fl
 		prev := allInRow[index-1]
 		prevSize := (*prev).Core().GetSize()
 		prevPos := (*prev).Core().Position()
-		return prevPos.X + prevSize.Width
+		return posGetter(prevPos) + getter(prevSize) + l.Gap
 	case FlexCenter:
 		rowWidth := l.sumBy(allInRow, getter)
 		offset := l.sumBy(allInRow[:index], getter)
@@ -84,7 +89,7 @@ func (l FlexLayout) groupCentricCalculation(index int, allInRow []*Component, fl
 		rowWidth := l.sumBy(allInRow, getter)
 		offset := l.sumBy(allInRow[:index], getter)
 		startingPoint := parentValue - rowWidth
-		return startingPoint + offset
+		return startingPoint + offset + l.Gap
 	}
 
 	return defaultValue
