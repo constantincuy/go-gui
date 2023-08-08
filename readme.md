@@ -30,8 +30,7 @@ For a fast introduction take a look at the [Getting Started](docs/getting-starte
 
 ### Component based architecture
 Go-Gui lets you build user interfaces out of individual pieces called components. 
-Components can be reused across your application. There are two major component types "virtual components" and "managed components".
-Go-Gui requires components to implement the `component.Component` interface. Each component is required to store a `component.Core`.
+Components can be reused across your application. Go-Gui requires components to implement the `component.Component` interface. Each component is required to store a `component.Core`.
 The component core offers common methods that are needed for most UI apps.
 
 Common needed methods offered by the component core:
